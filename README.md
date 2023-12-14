@@ -11,3 +11,8 @@ The project was started in 2023 by Aeronautics Institute of Technology and Unive
 ## References
 
 ## Citation
+```bash
+@article{mdgen2024,
+author = {},
+}
+``````
