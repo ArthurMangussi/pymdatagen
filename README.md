@@ -1,4 +1,4 @@
-# mdgen: Generation of missing data in datasets
+# mdgen: Generation of artificial missing data in datasets
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdgen/docs/)
@@ -32,11 +32,11 @@ If you use **mdgen** in your research, please cite the **mdgen paper**
 Bibtex entry:
 ```bash
 @article{mdgen2024,
-  author  = {Arthur D Mangussi and Ana Carolina Lorena and Pedro Henriques Abreu and Filipe Loyola},
-  title   = {mdgen: A Python library for Generate Missing Data},
+  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola and Pedro Henriques Abreu},
+  title   = {mdgen: A Python library for Generate Artifical Missing Data},
   journal = {Journal of Machine Learning Research},
-  year    = {2024},
-  volume  = {24},
+  year    = {},
+  volume  = {},
   number  = {},
   pages   = {},
   url     = {}
