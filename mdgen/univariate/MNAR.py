@@ -30,7 +30,7 @@ class MNAR:
         self,
         X: pd.DataFrame,
         y: np.array,
-        missing_rate: int,
+        missing_rate: int=10,
         x_miss: str = None,
         threshold: float = 0,
     ):
