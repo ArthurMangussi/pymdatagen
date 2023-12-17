@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdgen/docs/)
 
-This package was developed to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdgen) is a Python package that implements methods for generating missing values ​​for data, including MAR, MNAR, and MCAR mechanisms in both univariate and multivariate scenarios.
+This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdgen) is a Python package that implements methods for generating missing values ​​for data, including MAR, MNAR, and MCAR mechanisms in both univariate and multivariate scenarios.
 
 This Python package is a collaboration between researchers at the Aeronautics Institute of Technologies and the University of Coimbra.
 
