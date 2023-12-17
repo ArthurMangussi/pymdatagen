@@ -1,3 +1,12 @@
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import pandas as pd
 import numpy as np
 from utils.math_calcs import MathCalcs
@@ -8,16 +17,21 @@ import warnings
 # ==========================================================================
 class MAR:
     """
-    Generate missing values in a dataset based on the MAR (Missing At Random) mechanism for multiple features simultaneously.
+    A class to generate missing data in a dataset based on the Missing At Random (MAR) mechanism for multiple features simultaneously.
 
     Args:
-        insertion_dataset (pd.DataFrame): The dataset to receive the missing data.
-        missing_rate (int): The percentage of missing values to be generated.
-        method (str, optional): The method to select the observed feature and the feature to receive the missing data. It can be one of the folowing: ["random", "correlated"]. Defaults to "random".
-        n_xmiss (int): The number of features in the dataset that will receive missing values.
+        X (pd.DataFrame): The dataset to receive the missing data.
+        y (np.array): The label values from dataset
+        n_xmiss (int): The number of features in the dataset that will receive missing values. Default is 2.
 
-    Returns:
-        pd.DataFrame: The modified dataset with missing values based on the MAR mechanism for multiple features.
+    Example Usage:
+    ```
+    # Create an instance of the MAR class
+    generator = MAR(X, y, missing_rate=20, n_xmiss=4)
+
+    # Generate missing values using the random strategy
+    data_md = generator.random(missing_rate = 20)
+    ```    
     """
 
     def __init__(self, X: pd.DataFrame, y: np.array, n_xmiss: int = 2):
@@ -33,6 +47,24 @@ class MAR:
         self.dataset['target'] = y
 
     def random(self, missing_rate: int = 10) -> pd.DataFrame:
+        """
+        Function to generate arficial missing data in n_xmiss features chosen randomly.
+        The lower values in observed feature for each feature x_miss will determine 
+        the miss locations in x_miss.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
         if missing_rate >= 100:
             raise ValueError(
                 'Missing Rate is too high, the whole feature will be deleted!'
@@ -74,12 +106,33 @@ class MAR:
         return self.dataset
 
     def correlated(self, missing_rate: int = 10) -> pd.DataFrame:
-        """Não considera a classe"""
+        """
+        Function to generate missing data in features from dataset, except the class (target).
+        The lower values in observed feature for each correlated pair will determine the 
+        miss locations in feature x_miss.
+        
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
 
         if missing_rate >= 50:
             raise ValueError(
                 'Features will be all NaN, you should decrease the missing rate'
             )
+
+        warnings.warn(
+            'Class do not have missing data'
+        )
 
         mr = missing_rate / 100
 
@@ -107,6 +160,26 @@ class MAR:
         return self.dataset
 
     def median(self, missing_rate: int = 10) -> pd.DataFrame:
+        """
+        Function to generate missing data in features from dataset.
+        The median in observed feature for each correlated pair will create two groups.
+        The group is chosen randomly, and lower values will determine the miss locations 
+        in feature x_miss.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
+
         if missing_rate >= 50:
             raise ValueError(
                 'Features will be all NaN, you should decrease the missing rate'

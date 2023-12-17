@@ -1,20 +1,35 @@
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import pandas as pd
 import numpy as np
-
 
 import warnings
 
 # ==========================================================================
 class MCAR:
     """
-    Generate missing values in a dataset based on the MCAR (Missing Completely At Random) mechanism for multiple features simultaneously.
+    A class to generate missing data in a dataset based on the Missing Completely At Random (MCAR) mechanism for multiple features simultaneously.
 
     Args:
-        insertion_dataset (pd.DataFrame): The dataset to receive the missing values.
-        method (str, optional): The method to use for generating missing values. Currently, only the "random" method is supported. Defaults to "random".
+        X (pd.DataFrame): The dataset to receive the missing data.
+        y (np.array): The label values from dataset
+        missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+    
+    Example Usage:
+    ```
+    # Create an instance of the MCAR class
+    generator = MCAR(X, y, missing_rate=20)
 
-    Returns:
-        pd.DataFrame: The inserted dataset with missing values based on the MCAR mechanism.
+    # Generate missing values using the random strategy
+    data_md = generator.random()
+    ```
     """
 
     def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10):
@@ -36,6 +51,19 @@ class MCAR:
         self.dataset['target'] = y
 
     def random(self) -> pd.DataFrame:
+        """
+        Function to randomly generate missing data in all dataset.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MCAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
         original_shape = self.dataset.shape
         mr = self.missing_rate / 100
         n = self.dataset.shape[0]
@@ -53,6 +81,24 @@ class MCAR:
         return pd.DataFrame(array_values, columns=self.dataset.columns)
 
     def binomial(self, columns: list = None):
+        """
+        Function to generate missing data in columns by Bernoulli distribution
+        for each attribute informed.
+
+        Args:
+            columns (list): A list of strings containing columns names.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MCAR mechanism.
+        
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
+
         warnings.warn(
             'Binomial sometimes does not generate the input missing rate in dataset'
         )

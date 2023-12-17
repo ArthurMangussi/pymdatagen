@@ -1,3 +1,12 @@
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import pandas as pd
 import numpy as np
 from utils.feature_choice import FeatureChoice
@@ -9,23 +18,25 @@ import warnings
 # ==========================================================================
 class MNAR:
     """
-    Generate missing values in a dataset based on the MNAR (Missing Not At Random) mechanism for multiple features simultaneously.
+    A class to generate missing values in a dataset based on the Missing Not At Random (MNAR) mechanism for multiple features simultaneously.
 
     Args:
-        insertion_dataset (pd.DataFrame): The dataset in which missing values will be generated.
-        method (str, optional): The method to be used for generating missing values. It can be "random", "correlated", or "median". Default is "random".
-        n_xmiss (int, optional): The number of features that will receive missing data for random method. Default is the number of columns in the dataset.
-        threshold (float, optional): The threshold for selecting the lowest (threshold=0) and highest (threshold=1) values to be replaced with missing values. Default is 0.
-
-    Returns:
-        pd.DataFrame: The dataset with missing values generated according to the specified method.
+        X (pd.DataFrame): The dataset to receive the missing data.
+        y (np.array): The label values from dataset
+        missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+    
+    Keyword Args:
+        n_xmiss (int, optional): The number of features in the dataset that will receive missing values. Default is the number of features in dataset.
+        threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default is 0
 
     Example Usage:
-        # Initialize the MissingDataGenerator object
-        generator = MissingDataGenerator(X, y, missing_rate)
+    ```
+    # Create an instance of the MNAR class
+    generator = MNAR(X, y)
 
-        # Generate missing values using the MNAR_multiva method
-        missing_data = generator.MNAR_multiva(insertion_dataset, method="random", n_xmiss=5, threshold=0.2)
+    # Generate missing values using the random strategy
+    data_md = generator.random()
+    ```
     """
 
     def __init__(self, X: pd.DataFrame, y: np.array, **kwargs):
@@ -45,6 +56,23 @@ class MNAR:
         self.threshold = kwargs.get('threshold', 0)
 
     def random(self, missing_rate: int = 10):
+        """
+        Function to randomly choose the feature (x_miss) in dataset for generate missing
+        data. The miss locations on x_miss is the lower values based on unobserved feature.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        """
+
         if missing_rate >= 100:
             raise ValueError(
                 'Missing Rate is too high, the whole feature will be deleted!'
@@ -90,6 +118,24 @@ class MNAR:
         return self.dataset
 
     def correlated(self, missing_rate: int = 10):
+        """
+        Function to generate missing data in dataset based on correlated pair. 
+        The feature (x_miss) most correlated with the class for each pair will
+        receive the missing data based on lower values of an unobserved feature.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        """
+
         if missing_rate >= 50:
             raise ValueError(
                 'Features will be all NaN, you should decrease the missing rate'
@@ -129,6 +175,23 @@ class MNAR:
         return self.dataset
 
     def median(self, missing_rate: int = 10):
+        """
+        Function to generate missing data in all dataset based on median from
+        each feature. The miss locations are chosen by lower values from a unobserved feature.  
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        """
+
         if missing_rate >= 50:
             raise ValueError(
                 'Features will be all NaN, you should decrease the missing rate'
@@ -141,7 +204,7 @@ class MNAR:
             cutK = 2 * mr
             N = round(len(self.dataset) * cutK)
 
-            if len(self.dataset[col].unique()) == 2:  # Nominal feature
+            if len(self.dataset[col].unique()) == 2:  # Binary feature
                 g1_index = np.random.choice(
                     self.dataset[col].index,
                     round(len(self.dataset) / 2),
@@ -195,6 +258,21 @@ class MNAR:
     def MBOUV(
         self, missing_rate: int = 10, depend_on_external=None, ascending=True
     ):
+        """
+        Function to generate missing data based on Missigness Based on Own and Unobserved Values (MBOUV).
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [2]
+
+        """
+
         if depend_on_external is None:
             depend_on_external = []
 
@@ -257,8 +335,24 @@ class MNAR:
         randomness: float = 0,
         columns: list = None,
     ):
+        """
+        Function to generate missing data based on Missigness Based on Own Values (MBOV) using
+        a randomess to choose miss locations in each feature.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            randomness (float, optional): The randomness rate for choose miss locations. Default is 0 that represents lower values
+            columns (list): A list of strings containing columns names.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [2] 
+        """
         if not (0 <= randomness <= 0.5):
-            raise ValueError('Threshold must be in range [0,0.5]')
+            raise ValueError('randomness must be in range [0,0.5]')
 
         if columns is None:
             raise TypeError(
@@ -299,6 +393,22 @@ class MNAR:
         return self.dataset
 
     def MBOV_median(self, missing_rate: int = 10, columns: list = None):
+        """
+        Function to generate missing data based on Missigness Based on Own Values (MBOV) using
+        a median to choose miss locations in each feature.
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            columns (list): A list of strings containing columns names.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [2] 
+        """
+
         if missing_rate >= 100:
             raise ValueError(
                 'Missing Rate is too high, the whole feature will be deleted!'
@@ -333,6 +443,21 @@ class MNAR:
         columns: list = None,
         statistical_method: str = 'Mann-Whitney',
     ):
+        """
+        Function to generate missing data based on Missingness Based on Intra-Relation (MBIR).
+
+        Args:
+            missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            columns (list): A list of strings containing columns names.
+            statistical_method (str, optional): A string to inform statistical method. The options are ["Mann-Whitney", "Bayesian"]. Default is Mann-Whitney
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MNAR mechanism.
+
+        Reference:
+        [2] 
+        """
         if missing_rate >= 100:
             raise ValueError(
                 'Missing Rate is too high, the whole feature will be deleted!'

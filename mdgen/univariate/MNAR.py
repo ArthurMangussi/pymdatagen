@@ -21,7 +21,7 @@ class MNAR:
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
         x_miss (string, optional): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
-        threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default p=0
+        threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default is 0
 
     Example Usage:
     ```
