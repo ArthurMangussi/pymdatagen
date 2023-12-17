@@ -5,11 +5,14 @@
 As estratégias para gerar os dados ausentes são:
 
 ### MAR
-- lowest:
+- lowest: Function to generate missing values in the feature (x_miss) using the lowest values from a observed feature, based on a certain missing rate.
+
 - rank:
-- median:
-- highest:
-- mix:
+
+- median: Function to generate missing data in the feature (x_miss) using the median of a observed feature (x_obs). The x_obs median will create two groups (equal or higher) or lower than median. The group with values higher or equal to the median have 9 times more probability to be chosen based on a certain missing rate.
+
+- highest: Function to generate missing values in the feature (x_miss) using the highest values from a observed feature
+- mix: Function to generate missing values in the feature (x_miss) using the N/2 lowest values and N/2 highest values from a observed feature, where N is the missing data rate multiply the patterns from dataset.
 
 ### MNAR 
 - run:

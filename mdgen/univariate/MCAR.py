@@ -1,3 +1,12 @@
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import pandas as pd
 import numpy as np
 from utils.math_calcs import MathCalcs
@@ -6,24 +15,23 @@ from utils.math_calcs import MathCalcs
 # ==========================================================================
 class MCAR:
     """
-    Generate missing values in a dataset based on the MCAR (Missing Completely At Random) mechanism.
+    A class to generate missing values in a dataset based on the Missing Completely At Random (MCAR) univariate mechanism.
 
     Args:
-        insertion_dataset (pd.DataFrame): The dataset to receive the missing data.
-        flag (str): An string flag that determines the method to select locations on xmiss. It should be one of the values ['random', 'bernoulli'].
-        method (str, optional): The method to select the feature (xmiss) with missing values. It should be one of the values ['random', 'correlated', 'min', 'max']. Defaults to 'random'.
-        x_miss (string): The name of feature to insert the missing data. If not informed, x_miss will be based on "method".
-
-    Returns:
-        pd.DataFrame: The inserted dataset with missing values under the MCAR mechanism.
+        X (pd.DataFrame): The dataset to receive the missing data.
+        y (np.array): The label values from dataset
+        missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+        x_miss (string, optional): The name of feature to insert the missing data. 
+        method (str, optional): The method to choose x_miss. If x_miss not informed by user, x_miss will be choose randomly. The options to choose xmiss is ["random", "correlated", "min", "max"]. Default is "random"
+    
 
     Example Usage:
     ```python
-    # Initialize the MissingDataGenerator object
-    imputador = MissingDataGenerator(dados_completo=df, missing_rate=10)
+    # Create an instance of the MCAR class
+    generator = MCAR(X, y, missing_rate=20, method="correlated")
 
-    # Call the MCAR_univa method to impute missing values
-    imputed_dataset = imputador.MCAR_univa(df)
+    # Generate missing values using the random strategy
+    data_md = generator.random()
     ```
     """
 
@@ -32,7 +40,7 @@ class MCAR:
         self,
         X: pd.DataFrame,
         y: np.array,
-        missing_rate: int,
+        missing_rate: int=10,
         x_miss: str = None,
         method: str = 'random',
     ):
@@ -77,6 +85,19 @@ class MCAR:
 
     # ------------------------------------------------------------------------
     def random(self):
+        """
+        Function to choose randomly the feature (x_miss) locations to be missing.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MCAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+
+        """
         pos_xmiss = np.random.choice(
             self.dataset[self.x_miss].index, self.N, replace=False
         )
@@ -85,6 +106,19 @@ class MCAR:
 
     # ------------------------------------------------------------------------
     def binomial(self):
+        """
+        Function to choose the feature (x_miss) locations to be missing by Bernoulli distribution.
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under 
+            the MCAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+        
+        """
         pos_xmiss = np.random.binomial(
             n=1, p=self.missing_rate / 100, size=self.dataset.shape[0]
         ).astype(bool)

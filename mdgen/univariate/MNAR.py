@@ -1,3 +1,12 @@
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import pandas as pd
 import numpy as np
 from utils.feature_choice import FeatureChoice
@@ -5,15 +14,14 @@ from utils.feature_choice import FeatureChoice
 # ==========================================================================
 class MNAR:
     """
-    Generate missing values in a dataset based on the MNAR (Missing Not At Random) mechanism.
+    A class to generate missing values in a dataset based on the Missing Not At Random (MNAR) univariate mechanism.
 
     Args:
-        insertion_dataset (pd.DataFrame): The dataset to receive the missing data.
-        p (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default p=0
-        x_miss (string): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
-
-    Returns:
-        pd.DataFrame: The inserted dataset with missing values under the MNAR mechanism.
+        X (pd.DataFrame): The dataset to receive the missing data.
+        y (np.array): The label values from dataset
+        missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+        x_miss (string, optional): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
+        threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default p=0
 
     Example Usage:
     ```
@@ -64,6 +72,20 @@ class MNAR:
 
     # ------------------------------------------------------------------------
     def run(self):
+        """
+        Function to generate missing values in the feature (x_miss) using the
+        threshold to choose values from a unobserved feature. 
+
+        Returns:
+            dataset (DataFrame): The dataset with missing values generated under the MNAR mechanism.
+
+        Reference:
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
+        IEEE Access 7: 11651–67.
+
+        """
+
         x_f = self.dataset.loc[:, self.x_miss].values
 
         # Unobserved random feature
