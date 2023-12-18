@@ -16,7 +16,7 @@ Please refer to the [univariate docs](mdgen/docs/univariate.md) or [multivariate
 To install the package, please use the `pip` installation as follows:
 
 ```bash
-pip3.11 install mdgen
+pip install mdgen
 ```
 
 ### Usage examples
