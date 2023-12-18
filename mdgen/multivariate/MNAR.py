@@ -508,7 +508,7 @@ class MNAR:
                         if p_value < 0.05:
                             # There is evidence of a significant difference.
                             most_significant_diff[x_obs] = p_value
-                            print('There is evidence of a significant difference')
+                            
 
             most_feature = min(
                 most_significant_diff, key=most_significant_diff.get
