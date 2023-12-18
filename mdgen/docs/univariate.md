@@ -1,54 +1,25 @@
-## Univariate mechanisms
+## Documentation about Univariate mechanisms
 
-**missing-data-generator** possui a abordagem univariada, a qual se refere à apenas um atributo do dataset contendo os dados ausentes. A partir disso, a literatura apresenta 3 mecanismos: Missing Completly at Random (MCAR), Missing Not at Random (MNAR) e Missing at Random (MAR). Todos os 3 estão implementados na biblioteca Python.
+**missing-data-generator** has univariate approach that it refers about only one feature in dataset containing missing values. From this concept, the literature presents three mechanisms: Missing Completly at Random (MCAR), Missing Not at Random (MNAR) e Missing at Random (MAR). For each mechanism are different strategies to choose the miss locations, and all these are implemented in this Python package.
 
-As estratégias para gerar os dados ausentes são:
+The strategies to generate artificial missing data are described as follows:
 
-### MAR
-- lowest: Function to generate missing values in the feature (x_miss) using the lowest values from a observed feature, based on a certain missing rate.
+### Missng At Random (MAR)
 
-- rank:
+-lowest: Method to generate missing values in the feature (x_miss) by selecting the lowest values from an observed feature, based on a specified missing rate;
 
-- median: Function to generate missing data in the feature (x_miss) using the median of a observed feature (x_obs). The x_obs median will create two groups (equal or higher) or lower than median. The group with values higher or equal to the median have 9 times more probability to be chosen based on a certain missing rate.
+-rank: A rank is created for the observed feature; this rank serves as the criterion for identifying the missing locations in the feature (x_miss). While the original paper proposed a rank determined by the sum of all ranks, in the mdgen package, we employ the maximum rank plus 1 to determine whether the index will be missing. If the target missing rate is not achieved after 50 iterations, new random numbers are generated to facilitate continued searching.
 
-- highest: Function to generate missing values in the feature (x_miss) using the highest values from a observed feature
-- mix: Function to generate missing values in the feature (x_miss) using the N/2 lowest values and N/2 highest values from a observed feature, where N is the missing data rate multiply the patterns from dataset.
+-median: This function generates missing data in the feature (x_miss) by utilizing the median of an observed feature (x_obs). The median of x_obs results in two groups—those equal to or higher than the median and those lower than the median. The group with values higher or equal to the median is chosen with a probability nine times greater, based on a specified missing rate.
 
-### MNAR 
-- run:
+-highest: This function generates missing values in the feature (x_miss) by selecting the highest values from an observed feature.
 
-### MCAR
-- random:
-- binomial:
+-mix: This function generates missing values in the feature (x_miss) by incorporating the N/2 lowest values and N/2 highest values from an observed feature, where N is the missing data rate multiplied by the patterns from the dataset.
 
+### Missing Not at Random (MNAR) 
+- run: Method to generate missing values in the feature (x_miss) by selecting the threshold to choose values from an unobserved feature. The threshold is a float between 0 and 1. If the threshold is equal to 0, the lowest values from an unobserved feature will be selected to determine the missing locations in x_miss. Otherwise, if the threshold is 1, the highest values will be selected. This strategy is a generic implementation in the literature, and the user can employ various methodologies. The unobserved feature is not in the dataset; it consists of a range of random numbers with the same length as the patterns.
 
-## Usage example
+### Missing Completly at Random (MCAR)
+-random: Method to randomly select locations in the feature (x_miss) to be missing.
 
-Here is a simple example of how you can use the missing value generation class in your own Python code:
-
-```python
-# Import the generate missing data class
-from univariate.univariate import MAR, MNAR, MCAR
-from sklearn.datasets import load_iris
-import pandas as pd
-
-# Load the data
-iris = load_iris()
-iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-
-X = iris_df.copy() # Features
-y = iris.target    # Label values
-
-# Create a instance with missing rate equal to 10% in dataset under MNAR mechanism
-generator = MNAR(X=X,y = y, missing_rate=10)
-
-# Generate the missing data under MNAR mechanism
-generate_data = generator.run()
-
-# Generate the missing data under MAR mechanism with lowest strategy
-generate_data = generator.lowest()
-
-# Generate the missing data under MCAR mechanism with random strategy
-generate_data = generator.random()
-
-``````
+-binomial: Method to determine feature (x_miss) locations to be missing using a Bernoulli distribution. In this method, we implement the Bernoulli distribution using `numpy.binomial`, and occasionally, this method may not exactly generate the missing rate specified by the user.

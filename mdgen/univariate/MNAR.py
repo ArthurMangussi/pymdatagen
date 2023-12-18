@@ -74,7 +74,7 @@ class MNAR:
     def run(self):
         """
         Function to generate missing values in the feature (x_miss) using the
-        threshold to choose values from a unobserved feature. 
+        threshold to choose values from an unobserved feature. 
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under the MNAR mechanism.

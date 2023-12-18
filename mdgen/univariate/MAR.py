@@ -71,7 +71,7 @@ class MAR:
     # ------------------------------------------------------------------------
     def lowest(self):
         """Function to generate missing values in the feature (x_miss) using 
-        the lowest values from a observed feature.
+        the lowest values from an observed feature.
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 
@@ -91,7 +91,7 @@ class MAR:
     def rank(self):
         """
         Function to generate missing values in the feature (x_miss) using 
-        a rank from a observed feature. 
+        a rank from an observed feature. 
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 
@@ -131,7 +131,7 @@ class MAR:
     def median(self):
         """
         Function to generate missing data in the feature (x_miss) using the median
-        of a observed feature. 
+        of an observed feature. 
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 
@@ -163,7 +163,7 @@ class MAR:
     # ------------------------------------------------------------------------
     def highest(self):
         """Function to generate missing values in the feature (x_miss) using the 
-        highest values from a observed feature.
+        highest values from an observed feature.
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 
@@ -188,7 +188,7 @@ class MAR:
     def mix(self):
         """
         Function to generate missing values in the feature (x_miss) using the 
-        N/2 lowest values and N/2 highest values from a observed feature.
+        N/2 lowest values and N/2 highest values from an observed feature.
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 

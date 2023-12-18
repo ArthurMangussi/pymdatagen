@@ -86,7 +86,7 @@ class MCAR:
     # ------------------------------------------------------------------------
     def random(self):
         """
-        Function to choose randomly the feature (x_miss) locations to be missing.
+        Function to randomly select locations in the feature (x_miss) to be missing.
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under 
