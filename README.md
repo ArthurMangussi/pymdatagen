@@ -1,39 +1,39 @@
-# mdgen: Generation of artificial missing data in datasets
+# mdatagen: Generation of artificial missing data in datasets
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdgen/docs/)
+[![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdatagen/docs/)
 
-This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdgen) is a Python package that implements methods for generating missing values ​​for data, including Missing At Random (MAR), Missing Not At Random (MNAR), and Missing Completly At Random (MCAR) mechanisms in both univariate and multivariate scenarios.
+This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdatagen) is a Python package that implements methods for generating missing values ​​for data, including Missing At Random (MAR), Missing Not At Random (MNAR), and Missing Completly At Random (MCAR) mechanisms in both univariate and multivariate scenarios.
 
 This Python package is a collaboration between researchers at the Aeronautics Institute of Technologies (Brazil) and the University of Coimbra (Portugal).
 
 ## User Guide
 
-Please refer to the [univariate docs](mdgen/docs/univariate.md) or [multivariate docs](mdgen/docs/multivariate.md) for more details.
+Please refer to the [univariate docs](mdatagen/docs/univariate.md) or [multivariate docs](mdatagen/docs/multivariate.md) for more details.
 
 
 ### Installation
 To install the package, please use the `pip` installation as follows:
 
 ```bash
-pip install mdgen
+pip install mdatagen
 ```
 
 ### Usage examples
-For examples on how to use the mdgen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow this [examples](tests/).
+For examples on how to use the mdatagen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow this [examples](tests/).
 
 
 ## Contribuitions
 Contributions are welcome! Feel free to open issues, submit pull requests, or provide feedback
 
 ## Citation
-If you use **mdgen** in your research, please cite the [mdgen paper]()
+If you use **mdatagen** in your research, please cite the [mdatagen paper]()
 
 Bibtex entry:
 ```bash
-@article{mdgen2024,
+@article{mdatagen2024,
   author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Pedro Henriques Abreu and  Ricardo Cardoso Pereira},
-  title   = {mdgen: A Python library for Generate Artifical Missing Data},
+  title   = {mdatagen: A Python library for Generate Artifical Missing Data},
   journal = {Journal of Machine Learning Research},
   year    = {},
   volume  = {},

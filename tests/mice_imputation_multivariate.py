@@ -1,10 +1,10 @@
 """"
-A example of generate artificial missing data with mdgen library with the Breast Cancer Wiscosin dataset 
+A example of generate artificial missing data with mdatagen library with the Breast Cancer Wiscosin dataset 
 from scikit-learn, and use Multiple Imputation by Chained Equations (MICE) to imputation values into dataset
 generated. 
 """
 
-from mdgen.multivariate.MNAR import MNAR
+from mdatagen.multivariate.MNAR import MNAR
 from sklearn.datasets import load_breast_cancer
 import pandas as pd
 from sklearn.experimental import enable_iterative_imputer

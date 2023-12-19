@@ -1,11 +1,11 @@
 """"
-A novel example of generate artificial missing data with mdgen library with the Breast Cancer Wiscosin dataset 
-from scikit-learn. The features with label will receive the missing values under 
+A novel example of generate artificial missing data with mdatagen library with the Breast Cancer Wiscosin dataset 
+from scikit-learn. The features will receive the missing values under 
 Missing Not at Random (MNAR) mechanism. The simulated missing rate is 20%. 
 The method to choose missing values is Missingness Based on Own and Unobserved Values (MBOUV).
 """
 
-from mdgen.multivariate.MNAR import MNAR
+from mdatagen.multivariate.MNAR import MNAR
 from sklearn.datasets import load_breast_cancer
 import pandas as pd
 

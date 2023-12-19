@@ -1,10 +1,10 @@
 """"
-A basic example of generate artificial missing data with mdgen library with the Iris dataset from scikit-learn. 
+A basic example of generate artificial missing data with mdatagen library with the Iris dataset from scikit-learn. 
 The feature petal length will receive the missing values under Missing Completly at Random (MCAR) mechanism.
 The simulated missing rate is 25%. The method to choose missing values is random.
 """
 
-from mdgen.univariate.MCAR import MCAR
+from mdatagen.univariate.MCAR import MCAR
 from sklearn.datasets import load_iris
 import pandas as pd
 

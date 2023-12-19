@@ -8,7 +8,7 @@ The strategies to generate artificial missing data are described as follows:
 
 - lowest: Method to generate missing values in the feature `x_miss` by selecting the lowest values from an observed feature, based on a specified missing rate;
 
-- rank: A rank is created for the observed feature; this rank serves as the criterion for identifying the missing locations in the feature `x_miss`. While the original paper proposed a rank determined by the sum of all ranks, in the mdgen package, we employ the maximum rank plus 1 to determine whether the index will be missing. If the target missing rate is not achieved after 50 iterations, new random numbers are generated to facilitate continued searching.
+- rank: A rank is created for the observed feature; this rank serves as the criterion for identifying the missing locations in the feature `x_miss`. While the original paper proposed a rank determined by the sum of all ranks, in the mdatagen package, we employ the maximum rank plus 1 to determine whether the index will be missing. If the target missing rate is not achieved after 50 iterations, new random numbers are generated to facilitate continued searching.
 
 - median: This function generates missing data in the feature `x_miss` by utilizing the median of an observed feature `x_obs`. The median of `x_obs` results in two groups—those equal to or higher than the median and those lower than the median. The group with values higher or equal to the median is chosen with a probability nine times greater, based on a specified missing rate.
 
