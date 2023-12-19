@@ -269,7 +269,10 @@ class MNAR:
             the MNAR mechanism.
 
         Reference:
-        [2]
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        Analysis. Submitted to Expert Systems with Applications.
+
 
         """
 
@@ -349,7 +352,10 @@ class MNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        Analysis. Submitted to Expert Systems with Applications.
+
         """
         if not (0 <= randomness <= 0.5):
             raise ValueError('randomness must be in range [0,0.5]')
@@ -406,7 +412,10 @@ class MNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        Analysis. Submitted to Expert Systems with Applications.
+
         """
 
         if missing_rate >= 100:
@@ -456,7 +465,10 @@ class MNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        Analysis. Submitted to Expert Systems with Applications.
+        
         """
         if missing_rate >= 100:
             raise ValueError(
