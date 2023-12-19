@@ -3,9 +3,9 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdgen/docs/)
 
-This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdgen) is a Python package that implements methods for generating missing values ​​for data, including MAR, MNAR, and MCAR mechanisms in both univariate and multivariate scenarios.
+This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdgen) is a Python package that implements methods for generating missing values ​​for data, including Missing At Random (MAR), Missing Not At Random (MNAR), and Missing Completly At Random (MCAR) mechanisms in both univariate and multivariate scenarios.
 
-This Python package is a collaboration between researchers at the Aeronautics Institute of Technologies and the University of Coimbra.
+This Python package is a collaboration between researchers at the Aeronautics Institute of Technologies (Brazil) and the University of Coimbra (Portugal).
 
 ## User Guide
 
@@ -27,12 +27,12 @@ For examples on how to use the mdgen package, from basic examples that generate 
 Contributions are welcome! Feel free to open issues, submit pull requests, or provide feedback
 
 ## Citation
-If you use **mdgen** in your research, please cite the **mdgen paper**
+If you use **mdgen** in your research, please cite the [mdgen paper]()
 
 Bibtex entry:
 ```bash
 @article{mdgen2024,
-  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola and Pedro Henriques Abreu},
+  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Pedro Henriques Abreu and  Ricardo Cardoso Pereira},
   title   = {mdgen: A Python library for Generate Artifical Missing Data},
   journal = {Journal of Machine Learning Research},
   year    = {},
@@ -43,4 +43,4 @@ Bibtex entry:
 }
 ```
 ## Acknowledgements
-The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process number 2022/10553-6, bolsa FILIPE, LORENA e ver se Pedro tem.
+The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process numbers 2022/10553-6, and LORENA. Moreover, this study was financed in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, PEDRO.
