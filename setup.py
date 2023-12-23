@@ -9,7 +9,7 @@ setup(
     license='MIT',
     author='Arthur Dantas Mangussi',
     author_email='mangussiarthur@gmail.com',
-    url='https://github.com/ArthurMangussi/mdatagen',
+    url='https://github.com/ArthurMangussi/pymdatagen',
     
     packages=find_packages(),
     description='mdatagen: A Python library to Generate Artifical Missing Data',
