@@ -8,6 +8,7 @@ generated.
 
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
+from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
 from mdatagen.multivariate.mMNAR import mMNAR
@@ -31,8 +32,11 @@ imputer = IterativeImputer(max_iter=100)
 # Training the Imputer
 imputer.fit(generate_mddata)
 
+col = X.columns.to_list() # Columns names in result dataframe
+col.append("target")
+
 df_imputate = pd.DataFrame(
-    imputer.transform(generate_mddata), columns=X.columns
+    imputer.transform(generate_mddata), columns = pd.Index(col)
 )
 
 print(df_imputate.head())
