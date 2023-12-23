@@ -26,7 +26,7 @@ class mMCAR:
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
 
     Example Usage:
-    ```
+    ```python
     # Create an instance of the MCAR class
     generator = MCAR(X, y, missing_rate=20)
 

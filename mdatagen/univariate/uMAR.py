@@ -29,7 +29,7 @@ class uMAR:
         x_miss (string): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
 
     Example Usage:
-    ```
+    ```python
     # Create an instance of the MAR class
     generator = MAR(X, y, missing_rate=20, x_miss='feature1')
 

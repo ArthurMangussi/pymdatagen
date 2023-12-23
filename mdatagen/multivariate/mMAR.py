@@ -28,7 +28,8 @@ class mMAR:
         n_xmiss (int): The number of features in the dataset that will receive missing values. Default is 2.
 
     Example Usage:
-    ```
+
+    ```python
     # Create an instance of the MAR class
     generator = MAR(X, y, missing_rate=20, n_xmiss=4)
 

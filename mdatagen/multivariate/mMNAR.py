@@ -32,7 +32,7 @@ class mMNAR:
         threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default is 0
 
     Example Usage:
-    ```
+    ```python
     # Create an instance of the MNAR class
     generator = MNAR(X, y)
 

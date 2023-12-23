@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdatagen/docs/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/ArthurMangussi/pymdatagen/releases/tag/v1.0.0)
 
 This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdatagen) is a Python package that implements methods for generating missing values ​​for data, including Missing At Random (MAR), Missing Not At Random (MNAR), and Missing Completly At Random (MCAR) mechanisms in both univariate and multivariate scenarios.
 
@@ -9,7 +10,7 @@ This Python package is a collaboration between researchers at the Aeronautics In
 
 ## User Guide
 
-Please refer to the [univariate docs](mdatagen/docs/univariate.md) or [multivariate docs](mdatagen/docs/multivariate.md) for more details.
+Please refer to the [univariate docs](docs/univariate.md) or [multivariate docs](docs/multivariate.md) for more details.
 
 
 ### Installation
@@ -20,7 +21,7 @@ pip install mdatagen
 ```
 
 ### Usage examples
-For examples on how to use the mdatagen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow this [examples](tests/).
+For examples on how to use the mdatagen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow this [examples](examples/).
 
 
 ## Contribuitions
