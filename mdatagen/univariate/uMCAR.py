@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # =============================================================================
 # Aeronautics Institute of Technologies (ITA) - Brazil
 # University of Coimbra (UC) - Portugal
@@ -7,13 +9,13 @@
 __author__ = 'Arthur Dantas Mangussi'
 __version__ = '1.0.0'
 
-import pandas as pd
 import numpy as np
-from utils.math_calcs import MathCalcs
+import pandas as pd
+from mdatagen.utils.math_calcs import MathCalcs
 
 
 # ==========================================================================
-class MCAR:
+class uMCAR:
     """
     A class to generate missing values in a dataset based on the Missing Completely At Random (MCAR) univariate mechanism.
 
@@ -21,9 +23,9 @@ class MCAR:
         X (pd.DataFrame): The dataset to receive the missing data.
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
-        x_miss (string, optional): The name of feature to insert the missing data. 
+        x_miss (string, optional): The name of feature to insert the missing data.
         method (str, optional): The method to choose x_miss. If x_miss not informed by user, x_miss will be choose randomly. The options to choose xmiss is ["random", "correlated", "min", "max"]. Default is "random"
-    
+
 
     Example Usage:
     ```python
@@ -40,7 +42,7 @@ class MCAR:
         self,
         X: pd.DataFrame,
         y: np.array,
-        missing_rate: int=10,
+        missing_rate: int = 10,
         x_miss: str = None,
         method: str = 'random',
     ):
@@ -89,11 +91,11 @@ class MCAR:
         Function to randomly select locations in the feature (x_miss) to be missing.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MCAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
 
@@ -110,14 +112,14 @@ class MCAR:
         Function to choose the feature (x_miss) locations to be missing by Bernoulli distribution.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MCAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
         pos_xmiss = np.random.binomial(
             n=1, p=self.missing_rate / 100, size=self.dataset.shape[0]

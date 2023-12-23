@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # =============================================================================
 # Aeronautics Institute of Technologies (ITA) - Brazil
 # University of Coimbra (UC) - Portugal
@@ -7,16 +9,16 @@
 __author__ = 'Arthur Dantas Mangussi'
 __version__ = '1.0.0'
 
-import pandas as pd
-import numpy as np
-from utils.feature_choice import FeatureChoice
-from scipy.stats import mannwhitneyu
-
 import warnings
+
+import numpy as np
+import pandas as pd
+from scipy.stats import mannwhitneyu
+from mdatagen.utils.feature_choice import FeatureChoice
 
 
 # ==========================================================================
-class MNAR:
+class mMNAR:
     """
     A class to generate missing values in a dataset based on the Missing Not At Random (MNAR) mechanism for multiple features simultaneously.
 
@@ -24,7 +26,7 @@ class MNAR:
         X (pd.DataFrame): The dataset to receive the missing data.
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
-    
+
     Keyword Args:
         n_xmiss (int, optional): The number of features in the dataset that will receive missing values. Default is the number of features in dataset.
         threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default is 0
@@ -64,11 +66,11 @@ class MNAR:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
@@ -119,7 +121,7 @@ class MNAR:
 
     def correlated(self, missing_rate: int = 10):
         """
-        Function to generate missing data in dataset based on correlated pair. 
+        Function to generate missing data in dataset based on correlated pair.
         The feature (x_miss) most correlated with the class for each pair will
         receive the missing data based on lower values of an unobserved feature.
 
@@ -127,11 +129,11 @@ class MNAR:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
@@ -177,17 +179,17 @@ class MNAR:
     def median(self, missing_rate: int = 10):
         """
         Function to generate missing data in all dataset based on median from
-        each feature. The miss locations are chosen by lower values from a unobserved feature.  
+        each feature. The miss locations are chosen by lower values from a unobserved feature.
 
         Args:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
@@ -265,12 +267,12 @@ class MNAR:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
         Analysis. Submitted to Expert Systems with Applications.
 
 
@@ -348,12 +350,12 @@ class MNAR:
             columns (list): A list of strings containing columns names.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
         Analysis. Submitted to Expert Systems with Applications.
 
         """
@@ -408,12 +410,12 @@ class MNAR:
             columns (list): A list of strings containing columns names.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
         Analysis. Submitted to Expert Systems with Applications.
 
         """
@@ -461,14 +463,14 @@ class MNAR:
             statistical_method (str, optional): A string to inform statistical method. The options are ["Mann-Whitney", "Bayesian"]. Default is Mann-Whitney
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023. 
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark 
+        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
+        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
         Analysis. Submitted to Expert Systems with Applications.
-        
+
         """
         if missing_rate >= 100:
             raise ValueError(
@@ -494,7 +496,7 @@ class MNAR:
             most_significant_diff = {}
             for x_obs in df_columns:
                 if self.dataset[x_obs].dtype != 'object':
-                    
+
                     instances = self.dataset.copy()
 
                     if x_obs != x_miss:
@@ -505,7 +507,9 @@ class MNAR:
                         instances.loc[lower, x_miss] = np.nan
 
                         # Create the missing indicator
-                        auxiliary_ind = np.where(instances[x_miss].isna(), 1, 0)
+                        auxiliary_ind = np.where(
+                            instances[x_miss].isna(), 1, 0
+                        )
 
                         # Statistical tests between values of f_obs and f_ind
                         match statistical_method:
@@ -520,7 +524,6 @@ class MNAR:
                         if p_value < 0.05:
                             # There is evidence of a significant difference.
                             most_significant_diff[x_obs] = p_value
-                            
 
             most_feature = min(
                 most_significant_diff, key=most_significant_diff.get

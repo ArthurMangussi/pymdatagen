@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*
+
 # =============================================================================
 # Aeronautics Institute of Technologies (ITA) - Brazil
 # University of Coimbra (UC) - Portugal
@@ -7,13 +9,14 @@
 __author__ = 'Arthur Dantas Mangussi'
 __version__ = '1.0.0'
 
-import pandas as pd
-import numpy as np
-
 import warnings
 
+import numpy as np
+import pandas as pd
+
+
 # ==========================================================================
-class MCAR:
+class mMCAR:
     """
     A class to generate missing data in a dataset based on the Missing Completely At Random (MCAR) mechanism for multiple features simultaneously.
 
@@ -21,7 +24,7 @@ class MCAR:
         X (pd.DataFrame): The dataset to receive the missing data.
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
-    
+
     Example Usage:
     ```
     # Create an instance of the MCAR class
@@ -55,14 +58,14 @@ class MCAR:
         Function to randomly generate missing data in all dataset.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MCAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
         original_shape = self.dataset.shape
         mr = self.missing_rate / 100
@@ -89,14 +92,14 @@ class MCAR:
             columns (list): A list of strings containing columns names.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MCAR mechanism.
-        
+
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
 
         warnings.warn(

@@ -1,6 +1,17 @@
+# -*- coding: utf-8 -*-
+
+# =============================================================================
+# Aeronautics Institute of Technologies (ITA) - Brazil
+# University of Coimbra (UC) - Portugal
+# Arthur Dantas Mangussi - mangussiarthur@gmail.com
+# =============================================================================
+
+__author__ = 'Arthur Dantas Mangussi'
+__version__ = '1.0.0'
+
 import numpy as np
 import pandas as pd
-from utils.math_calcs import MathCalcs
+from mdatagen.utils.math_calcs import MathCalcs
 
 
 class FeatureChoice:

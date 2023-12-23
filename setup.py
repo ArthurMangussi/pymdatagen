@@ -1,28 +1,27 @@
-from setuptools import find_packages, setup
+# -*- coding: utf-8 -*-
+
+from setuptools import setup, find_packages
 
 setup(
-    name="mdatagen",
-    version="1.0.0",
-    packages=["mdatagen"],
-    license="MIT",
-    author="Arthur Dantas Mangussi",
-    author_email="mangussiarthur@gmail.com",
-    url= "https://github.com/ArthurMangussi/mdatagen",
-    keywords=["machine learning", "preprocessing data"],
-    description="mdatagen: A Python library to Generate Artifical Missing Data",
-    requires=["python >= 3.11",
-              "numpy >= 1.25.0",
-              "pandas >= 2.0.3",
-              "scikit-learn == 1.3.0"],
-    download_url="https://github.com/ArthurMangussi/mdatagen/archive/refs/tags/v1.0.0.tar.gz",
-    classifiers=[
-    'Development Status :: 4 - Alpha',      
-    'Intended Audience :: Developers',
-    'Intended Audience :: Education',
-    'Intended Audience :: Science/Research',     
-    'Topic :: Software Development :: Build Tools',
-    'License :: OSI Approved :: MIT License',   
-    'Programming Language :: Python :: 3',      
-    'Programming Language :: Python :: 3.11'],
+    name='mdatagen',
+    version='1.0.0',
+    keywords=['machine learning', 'preprocessing data'],
+    license='MIT',
+    author='Arthur Dantas Mangussi',
+    author_email='mangussiarthur@gmail.com',
+    url='https://github.com/ArthurMangussi/mdatagen',
     
+    packages=find_packages(),
+    description='mdatagen: A Python library to Generate Artifical Missing Data',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
+
+    install_requires=[
+        'python >= 3.11',
+        'numpy >= 1.25.0',
+        'pandas >= 2.0.3',
+        'scikit-learn == 1.3.0',
+    ],
 )
+
+

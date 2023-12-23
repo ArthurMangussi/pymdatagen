@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # =============================================================================
 # Aeronautics Institute of Technologies (ITA) - Brazil
 # University of Coimbra (UC) - Portugal
@@ -7,12 +9,13 @@
 __author__ = 'Arthur Dantas Mangussi'
 __version__ = '1.0.0'
 
-import pandas as pd
 import numpy as np
-from utils.feature_choice import FeatureChoice
+import pandas as pd
+from mdatagen.utils.feature_choice import FeatureChoice
+
 
 # ==========================================================================
-class MNAR:
+class uMNAR:
     """
     A class to generate missing values in a dataset based on the Missing Not At Random (MNAR) univariate mechanism.
 
@@ -38,7 +41,7 @@ class MNAR:
         self,
         X: pd.DataFrame,
         y: np.array,
-        missing_rate: int=10,
+        missing_rate: int = 10,
         x_miss: str = None,
         threshold: float = 0,
     ):
@@ -74,13 +77,13 @@ class MNAR:
     def run(self):
         """
         Function to generate missing values in the feature (x_miss) using the
-        threshold to choose values from an unobserved feature. 
+        threshold to choose values from an unobserved feature.
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under the MNAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
 

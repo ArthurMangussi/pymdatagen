@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*
+
 # =============================================================================
 # Aeronautics Institute of Technologies (ITA) - Brazil
 # University of Coimbra (UC) - Portugal
@@ -8,14 +10,15 @@ __author__ = 'Arthur Dantas Mangussi'
 __version__ = '1.0.0'
 
 
-import pandas as pd
-import numpy as np
 import random
-from utils.feature_choice import FeatureChoice
+
+import numpy as np
+import pandas as pd
+from mdatagen.utils.feature_choice import FeatureChoice
 
 
 # ==========================================================================
-class MAR:
+class uMAR:
     """
     A class to generate missing values in a dataset based on the Missing At Random (MAR) univariate mechanism.
 
@@ -24,7 +27,7 @@ class MAR:
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
         x_miss (string): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
-        
+
     Example Usage:
     ```
     # Create an instance of the MAR class
@@ -34,7 +37,6 @@ class MAR:
     data_md = generator.lowest()
     ```
     """
-
 
     # ------------------------------------------------------------------------
     def __init__(
@@ -70,18 +72,18 @@ class MAR:
 
     # ------------------------------------------------------------------------
     def lowest(self):
-        """Function to generate missing values in the feature (x_miss) using 
+        """Function to generate missing values in the feature (x_miss) using
         the lowest values from an observed feature.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
         pos_xmis = self.dataset[self.x_obs].sort_values()[: self.N].index
         self.dataset.loc[pos_xmis, self.x_miss] = np.nan
@@ -90,15 +92,15 @@ class MAR:
     # ------------------------------------------------------------------------
     def rank(self):
         """
-        Function to generate missing values in the feature (x_miss) using 
-        a rank from an observed feature. 
+        Function to generate missing values in the feature (x_miss) using
+        a rank from an observed feature.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MAR mechanism.
-        
+
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
 
@@ -131,14 +133,14 @@ class MAR:
     def median(self):
         """
         Function to generate missing data in the feature (x_miss) using the median
-        of an observed feature. 
+        of an observed feature.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MAR mechanism.
 
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
 
@@ -162,18 +164,18 @@ class MAR:
 
     # ------------------------------------------------------------------------
     def highest(self):
-        """Function to generate missing values in the feature (x_miss) using the 
+        """Function to generate missing values in the feature (x_miss) using the
         highest values from an observed feature.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MAR mechanism.
-        
+
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
 
         pos_xmis = (
@@ -187,18 +189,18 @@ class MAR:
     # ------------------------------------------------------------------------
     def mix(self):
         """
-        Function to generate missing values in the feature (x_miss) using the 
+        Function to generate missing values in the feature (x_miss) using the
         N/2 lowest values and N/2 highest values from an observed feature.
 
         Returns:
-            dataset (DataFrame): The dataset with missing values generated under 
+            dataset (DataFrame): The dataset with missing values generated under
             the MAR mechanism.
-        
+
         Reference:
-        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and 
+        [1] Santos, M. S., R. C. Pereira, A. F. Costa, J. P. Soares, J. Santos, and
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
-        
+
         """
         pos_xmis_lowest = (
             self.dataset[self.x_obs].sort_values()[: round(self.N / 2)].index
