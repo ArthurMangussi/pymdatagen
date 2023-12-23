@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" "
+"""
 A novel example of generate artificial missing data with mdatagen library with the Breast Cancer Wiscosin dataset
 from scikit-learn. The features will receive the missing values under
 Missing Not at Random (MNAR) mechanism. The simulated missing rate is 20%.

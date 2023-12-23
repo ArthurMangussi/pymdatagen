@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" "
+"""
 A example of generate artificial missing data with mdatagen library with the Breast Cancer Wiscosin dataset
 from scikit-learn, and use Multiple Imputation by Chained Equations (MICE) to imputation values into dataset
 generated.
@@ -34,3 +34,5 @@ imputer.fit(generate_mddata)
 df_imputate = pd.DataFrame(
     imputer.transform(generate_mddata), columns=X.columns
 )
+
+print(df_imputate.head())

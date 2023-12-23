@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" "
+"""
 A basic example of generate artificial missing data with mdatagen library with the Iris dataset from scikit-learn.
 The most correlated feature with label will receive the missing values under Missing Not at Random (MNAR) mechanism.
 The simulated missing rate is 10% (default). The method to choose missing values is lowest.
