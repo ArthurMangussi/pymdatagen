@@ -1,7 +1,7 @@
 # mdatagen: A Python Library for Generate of Artificial Missing Data
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](mdatagen/docs/)
+[![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](docs/)
 [![Version](https://img.shields.io/badge/Version-0.0.8-brightgreen.svg)](https://github.com/ArthurMangussi/pymdatagen/releases/tag/v0.0.8)
 
 This package has been developing to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community does not have implementations of these strategies. Besides, Pereira et al (2023) proposed new benchmark strategies for Missing Not At Random (MNAR), and these novel methods are not yet implemented in Python. Hence, **missing-data-generator** (mdatagen) is a Python package that implements methods for generating missing values ​​for data, including Missing At Random (MAR), Missing Not At Random (MNAR), and Missing Completly At Random (MCAR) mechanisms in both univariate and multivariate scenarios.
