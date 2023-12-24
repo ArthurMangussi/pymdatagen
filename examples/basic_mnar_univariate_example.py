@@ -5,7 +5,6 @@ A basic example of generate artificial missing data with mdatagen library with t
 The most correlated feature with label will receive the missing values under Missing Not at Random (MNAR) mechanism.
 The simulated missing rate is 10% (default). The method to choose missing values is lowest.
 """
-
 import pandas as pd
 from sklearn.datasets import load_iris
 

@@ -5,7 +5,6 @@ A example of generate artificial missing data with mdatagen library with the Bre
 from scikit-learn, and use Multiple Imputation by Chained Equations (MICE) to imputation values into dataset
 generated.
 """
-
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 from sklearn.experimental import enable_iterative_imputer

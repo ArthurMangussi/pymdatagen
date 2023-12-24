@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '1.0.0'
+__version__ = '0.0.8'
 
 import warnings
 
@@ -554,9 +554,6 @@ class mMNAR:
                                 statistic, p_value = mannwhitneyu(
                                     instances[x_obs], auxiliary_ind
                                 )
-
-                            case 'Bayesian':
-                                print('Implementar Bayesian')
 
                         if p_value < 0.05:
                             # There is evidence of a significant difference.

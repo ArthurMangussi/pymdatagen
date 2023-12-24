@@ -5,7 +5,6 @@ A basic example of generate artificial missing data with mdatagen library with t
 The feature petal length will receive the missing values under Missing Completly at Random (MCAR) mechanism.
 The simulated missing rate is 25%. The method to choose missing values is random.
 """
-
 import pandas as pd
 from sklearn.datasets import load_iris
 

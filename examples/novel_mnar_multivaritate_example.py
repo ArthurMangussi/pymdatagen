@@ -6,7 +6,6 @@ from scikit-learn. The features will receive the missing values under
 Missing Not at Random (MNAR) mechanism. The simulated missing rate is 20%.
 The method to choose missing values is Missingness Based on Own and Unobserved Values (MBOUV).
 """
-
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 

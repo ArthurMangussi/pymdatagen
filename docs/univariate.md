@@ -3,7 +3,6 @@
 **missing-data-generator** has univariate approach that it refers about only one feature in dataset containing missing values. From this concept, the literature presents three mechanisms: Missing Completly at Random (MCAR), Missing Not at Random (MNAR) e Missing at Random (MAR). For each mechanism are different strategies to choose the miss locations, and all these are implemented in this Python package.
 
 The strategies to generate artificial missing data are described as follows:
-
 ### Missng At Random (MAR)
 
 - lowest: Method to generate missing values in the feature `x_miss` by selecting the lowest values from an observed feature, based on a specified missing rate;
