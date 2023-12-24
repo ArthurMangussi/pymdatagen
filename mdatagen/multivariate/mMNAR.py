@@ -57,13 +57,17 @@ class mMNAR:
         self.n_xmiss = kwargs.get('n_xmiss', self.p)
         self.threshold = kwargs.get('threshold', 0)
 
-    def random(self, missing_rate: int = 10):
+    def random(self, missing_rate: int = 10, deterministic:bool = False):
         """
         Function to randomly choose the feature (x_miss) in dataset for generate missing
-        data. The miss locations on x_miss is the lower values based on unobserved feature.
+        data. The miss locations on x_miss is the lower values based on unobserved feature
+        or feature x_miss itself.
 
         Args:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            deterministc (bool, optinal): A flag that determine if x_miss will have miss 
+            locations based on itself or an unobserved feature. Default is False
+            (i.e., an unobserved feature).
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under
@@ -105,9 +109,17 @@ class mMNAR:
             if x_miss not in xmiss_multiva:
                 x_f = self.dataset.loc[:, x_miss].values
 
-                # Unobserved random feature
-                ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
-                pos_xmiss = FeatureChoice.miss_locations(
+                if deterministic:
+                    # Observed feature
+                    ordered_id = np.argsort(x_f)
+                    pos_xmiss = FeatureChoice.miss_locations(
+                    ordered_id, self.threshold, N
+                )
+
+                else:
+                    # Unobserved random feature
+                    ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
+                    pos_xmiss = FeatureChoice.miss_locations(
                     ordered_id, self.threshold, N
                 )
 
@@ -119,14 +131,18 @@ class mMNAR:
 
         return self.dataset
 
-    def correlated(self, missing_rate: int = 10):
+    def correlated(self, missing_rate: int = 10, deterministic:bool = False):
         """
         Function to generate missing data in dataset based on correlated pair.
         The feature (x_miss) most correlated with the class for each pair will
-        receive the missing data based on lower values of an unobserved feature.
+        receive the missing data based on lower values of an unobserved feature
+        or feature x_miss itself.
 
         Args:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            deterministc (bool, optinal): A flag that determine if x_miss will have miss 
+            locations based on itself or an unobserved feature. Default is False
+            (i.e., an unobserved feature).
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under
@@ -166,9 +182,17 @@ class mMNAR:
 
             x_f = self.dataset.loc[:, x_miss].values
 
-            # Unobserved random feature
-            ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
-            pos_xmiss = FeatureChoice.miss_locations(
+            if deterministic:
+                # Observed feature
+                ordered_id = np.argsort(x_f)
+                pos_xmiss = FeatureChoice.miss_locations(
+                ordered_id, self.threshold, N
+            )
+
+            else:
+                # Unobserved random feature
+                ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
+                pos_xmiss = FeatureChoice.miss_locations(
                 ordered_id, self.threshold, N
             )
 
@@ -176,13 +200,17 @@ class mMNAR:
 
         return self.dataset
 
-    def median(self, missing_rate: int = 10):
+    def median(self, missing_rate: int = 10, deterministic:bool = False):
         """
         Function to generate missing data in all dataset based on median from
-        each feature. The miss locations are chosen by lower values from a unobserved feature.
+        each feature. The miss locations are chosen by lower values from a unobserved feature
+        or feature x_miss itself.
 
         Args:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+            deterministc (bool, optinal): A flag that determine if x_miss will have miss 
+            locations based on itself or an unobserved feature. Default is False
+            (i.e., an unobserved feature).
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under
@@ -247,9 +275,17 @@ class mMNAR:
             else:
                 x_f = self.dataset.loc[g2_index, col].values
 
-            # Unobserved random feature
-            ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
-            pos_xmiss = FeatureChoice.miss_locations(
+            if deterministic:
+                # Observed feature
+                ordered_id = np.argsort(x_f)
+                pos_xmiss = FeatureChoice.miss_locations(
+                ordered_id, self.threshold, N
+            )
+
+            else:
+                # Unobserved random feature
+                ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
+                pos_xmiss = FeatureChoice.miss_locations(
                 ordered_id, self.threshold, N
             )
 
@@ -338,7 +374,7 @@ class mMNAR:
         self,
         missing_rate: int = 10,
         randomness: float = 0,
-        columns: list = None,
+        columns: list = None
     ):
         """
         Function to generate missing data based on Missigness Based on Own Values (MBOV) using
@@ -460,7 +496,8 @@ class mMNAR:
         Args:
             missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
             columns (list): A list of strings containing columns names.
-            statistical_method (str, optional): A string to inform statistical method. The options are ["Mann-Whitney", "Bayesian"]. Default is Mann-Whitney
+            statistical_method (str, optional): A string to inform statistical method. 
+            The options are ["Mann-Whitney", "Bayesian"]. Default is Mann-Whitney
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under

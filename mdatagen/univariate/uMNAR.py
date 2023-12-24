@@ -74,10 +74,16 @@ class uMNAR:
         )
 
     # ------------------------------------------------------------------------
-    def run(self):
+    def run(self, deterministic:bool = False):
         """
         Function to generate missing values in the feature (x_miss) using the
-        threshold to choose values from an unobserved feature.
+        threshold to choose values from an unobserved feature or feature x_miss
+        itself.
+
+        Args:
+            deterministc (bool, optinal): A flag that determine if x_miss will have miss 
+            locations based on itself or an unobserved feature. Default is False
+            (i.e., an unobserved feature).
 
         Returns:
             dataset (DataFrame): The dataset with missing values generated under the MNAR mechanism.
@@ -91,9 +97,15 @@ class uMNAR:
 
         x_f = self.dataset.loc[:, self.x_miss].values
 
-        # Unobserved random feature
-        ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
-        pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.p, self.N)
+        if deterministic:
+            # Observed feature
+            ordered_id = np.argsort(x_f)
+            pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.p, self.N)
+
+        else:
+            # Unobserved random feature
+            ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
+            pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.p, self.N)
 
         self.dataset.loc[pos_xmiss, self.x_miss] = np.nan
 

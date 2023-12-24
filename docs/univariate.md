@@ -17,7 +17,7 @@ The strategies to generate artificial missing data are described as follows:
 - mix: This function generates missing values in the feature `x_miss` by incorporating the N/2 lowest values and N/2 highest values from an observed feature, where N is the missing data rate multiplied by the patterns from the dataset.
 
 ### Missing Not at Random (MNAR) 
-- run: Method to generate missing values in the feature `x_miss` by selecting the threshold to choose values from an unobserved feature. The threshold is a float between 0 and 1. If the threshold is equal to 0, the lowest values from an unobserved feature will be selected to determine the missing locations in `x_miss`. Otherwise, if the threshold is 1, the highest values will be selected. This strategy is a generic implementation in the literature, and the user can employ various methodologies. The unobserved feature is not in the dataset; it consists of a range of random numbers with the same length as the patterns.
+- run: Method to generate missing values in the feature `x_miss` by selecting the threshold to choose values from an unobserved feature or feature itself. The threshold is a float between 0 and 1. If the threshold is equal to 0, the lowest values from an unobserved/observed feature will be selected to determine the missing locations in `x_miss`. Otherwise, if the threshold is 1, the highest values will be selected. This strategy is a generic implementation in the literature, and the user can employ various methodologies. The unobserved feature is not in the dataset; it consists of a range of random numbers with the same length as the patterns.
 
 ### Missing Completly at Random (MCAR)
 - random: Method to randomly select locations in the feature `x_miss` to be missing.
