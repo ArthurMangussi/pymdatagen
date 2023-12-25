@@ -17,7 +17,7 @@ setup(
     long_description_content_type='text/markdown',
 
     install_requires=[
-        'python >= 3.11',
+        'python_version >= 3.11',
         'numpy >= 1.25.0',
         'pandas >= 2.0.3',
         'scikit-learn == 1.3.0',
