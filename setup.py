@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.0.85',
+    version='0.0.86',
     keywords=['machine learning', 'preprocessing data'],
     license='MIT',
     author='Arthur Dantas Mangussi',
@@ -15,7 +15,7 @@ setup(
     url='https://github.com/ArthurMangussi/pymdatagen',
     
     packages=find_packages(),
-    description='mdatagen: A Python library to Generate Artificial Missing Data',
+    description='mdatagen: A Python Library for the Generation of Artificial Missing Data',
     long_description=long_description,
     long_description_content_type='text/markdown',
 
