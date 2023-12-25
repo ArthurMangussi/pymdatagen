@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='mdatagen',
-    version='0.0.8',
+    version='0.0.82',
     keywords=['machine learning', 'preprocessing data'],
     license='MIT',
     author='Arthur Dantas Mangussi',
