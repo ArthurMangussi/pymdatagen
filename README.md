@@ -1,4 +1,4 @@
-# mdatagen: A Python Library for Generate of Artificial Missing Data
+# mdatagen: A Python Library for the Generation of Artificial Missing Data
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](docs/)
@@ -33,7 +33,7 @@ If you use **mdatagen** in your research, please cite the [mdatagen paper]()
 Bibtex entry:
 ```bash
 @article{mdatagen2024,
-  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Pedro Henriques Abreu and  Ricardo Cardoso Pereira},
+  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Ricardo Cardoso Pereira and Pedro Henriques Abreu},
   title   = {mdatagen: A Python Library for Generate Artifical Missing Data},
   journal = {Journal of Machine Learning Research},
   year    = {},
@@ -44,4 +44,4 @@ Bibtex entry:
 }
 ```
 ## Acknowledgements
-The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process numbers 2022/10553-6, and LORENA. Moreover, this study was financed in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, PEDRO.
+The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process numbers 2022/10553-6, and LORENA. Moreover, this research was supported in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, and Portuguese Recovery and Resilience Plan (PRR) through project C645008882-00000055 Center for Responsable AI.
