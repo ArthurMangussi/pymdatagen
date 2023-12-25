@@ -34,7 +34,7 @@ Bibtex entry:
 ```bash
 @article{mdatagen2024,
   author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Ricardo Cardoso Pereira and Pedro Henriques Abreu},
-  title   = {mdatagen: A Python Library for the Generation Artifical Missing Data},
+  title   = {mdatagen: A Python Library for the Generation of Artificial Missing Data},
   journal = {Journal of Machine Learning Research},
   year    = {},
   volume  = {},
