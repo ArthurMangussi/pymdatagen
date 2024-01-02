@@ -33,7 +33,7 @@ If you use **mdatagen** in your research, please cite the [mdatagen paper]()
 Bibtex entry:
 ```bash
 @article{mdatagen2024,
-  author  = {Arthur D Mangussi and Ana Carolina Lorena and Filipe Loyola Lopes and Miriam Seone Santos and Ricardo Cardoso Pereira and Pedro Henriques Abreu},
+  author  = {Arthur D Mangussi and Filipe Loyola Lopes and Miriam Seone Santos and Ricardo Cardoso Pereira and Ana Carolina Lorena and Pedro Henriques Abreu},
   title   = {mdatagen: A Python Library for the Generation of Artificial Missing Data},
   journal = {Journal of Machine Learning Research},
   year    = {},
@@ -44,4 +44,4 @@ Bibtex entry:
 }
 ```
 ## Acknowledgements
-The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process numbers 2022/10553-6, and LORENA. Moreover, this research was supported in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, and Portuguese Recovery and Resilience Plan (PRR) through project C645008882-00000055 Center for Responsable AI.
+The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) process numbers 2022/10553-6, and 2021/06870-3. Moreover, this research was supported in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, and Portuguese Recovery and Resilience Plan (PRR) through project C645008882-00000055 Center for Responsable AI.
