@@ -1,6 +1,6 @@
 ## Documentation about Multivariate mechanisms
 
-**missing-data-generator** has multivariate approach that it refers about only one feature in dataset containing missing values. From this concept, the literature presents three mechanisms: Missing Completly at Random (MCAR), Missing Not at Random (MNAR) e Missing at Random (MAR). For each mechanism are different strategies to choose the miss locations, and all these are implemented in this Python package. For all methods in multivariate, the missing data rate is calculated for entire dataset. 
+**missing-data-generator** has multivariate approach that it refers about more than one feature in dataset containing missing values. From this concept, the literature presents three mechanisms: Missing Completly at Random (MCAR), Missing Not at Random (MNAR) e Missing at Random (MAR). For each mechanism are different strategies to choose the miss locations, and all these are implemented in this Python package. For all methods in multivariate, the missing data rate is calculated for entire dataset. 
 
 The strategies to generate artificial missing data are described as follows:
 
