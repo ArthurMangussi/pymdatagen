@@ -22,5 +22,5 @@ y = wiscosin.target    # Label values
 generator = mMNAR(X=X, y=y)
 
 # Generate the missing data under MNAR mechanism
-generate_data = generator.MBOUV(missing_rate=20)
+generate_data = generator.MBOUV(missing_rate=20, depend_on_external=X.columns)
 print(generate_data.isna().sum())
