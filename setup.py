@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.0.86',
+    version='0.0.87',
     keywords=['machine learning', 'preprocessing data'],
     license='MIT',
     author='Arthur Dantas Mangussi',
