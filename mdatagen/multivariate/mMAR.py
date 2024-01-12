@@ -31,7 +31,7 @@ class mMAR:
 
     ```python
     # Create an instance of the MAR class
-    generator = MAR(X, y, missing_rate=20, n_xmiss=4)
+    generator = MAR(X, y, n_xmiss=4)
 
     # Generate missing values using the random strategy
     data_md = generator.random(missing_rate = 20)
