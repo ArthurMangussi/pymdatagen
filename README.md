@@ -21,7 +21,7 @@ pip install mdatagen
 ```
 
 ### Usage examples
-For examples on how to use the mdatagen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow this [examples](examples/).
+For examples on how to use the mdatagen package, from basic examples that generate artificial missing data under a mechanism to complete examples using Multiple Imputation by Chained Equations (MICE) from scikit-learn for imputation, follow these [examples](examples/).
 
 
 ## Contribuitions
