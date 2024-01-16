@@ -28,7 +28,7 @@ For examples on how to use the mdatagen package, from basic examples that genera
 Contributions are welcome! Feel free to open issues, submit pull requests, or provide feedback.
 
 ## Citation
-If you use **mdatagen** in your research, please cite the [original paper](10.1109/ACCESS.2019.2891360)
+If you use **mdatagen** in your research, please cite the [original paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8605316)
 
 Bibtex entry:
 ```bash
