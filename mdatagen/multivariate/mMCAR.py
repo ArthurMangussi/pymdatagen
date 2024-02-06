@@ -52,6 +52,7 @@ class mMCAR:
         self.y = y
         self.dataset = self.X.copy()
         self.dataset['target'] = y
+        self.missing_rate = missing_rate
 
     def random(self) -> pd.DataFrame:
         """
