@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '0.0.8'
+
 
 import numpy as np
 import pandas as pd
@@ -103,9 +103,7 @@ class MathCalcs:
         g1_index = np.random.choice(
             dataset[x_obs].index, round(len(dataset) / 2), replace=False
         )
-        g2_index = np.random.choice(
-            dataset[x_obs].index, round(len(dataset) / 2), replace=False
-        )
+        g2_index = np.array([i for i in dataset[x_obs].index if i not in g1_index])
 
         g1 = dataset.loc[g1_index, x_obs]
         g2 = dataset.loc[g2_index, x_obs]

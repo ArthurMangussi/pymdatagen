@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '0.0.8'
+
 
 import warnings
 
@@ -26,6 +26,7 @@ class mMAR:
         X (pd.DataFrame): The dataset to receive the missing data.
         y (np.array): The label values from dataset
         n_xmiss (int): The number of features in the dataset that will receive missing values. Default is 2.
+        missTarget (bool, optional): A flag to generate missing into the target.
 
     Example Usage:
 
@@ -38,7 +39,7 @@ class mMAR:
     ```
     """
 
-    def __init__(self, X: pd.DataFrame, y: np.array, n_xmiss: int = 2):
+    def __init__(self, X: pd.DataFrame, y: np.array, n_xmiss: int = 2, missTarget:bool=False):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
         if not isinstance(y, np.ndarray):
@@ -48,7 +49,10 @@ class mMAR:
         self.X = X
         self.y = y
         self.dataset = self.X.copy()
-        self.dataset['target'] = y
+        self.missTarget = missTarget
+
+        if missTarget:
+            self.dataset['target'] = y
 
     def random(self, missing_rate: int = 10) -> pd.DataFrame:
         """
@@ -107,6 +111,8 @@ class mMAR:
                 xmiss_multiva.append(x_miss)
                 cont += 1
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def correlated(self, missing_rate: int = 10) -> pd.DataFrame:
@@ -159,6 +165,8 @@ class mMAR:
             pos_xmiss = self.dataset[x_obs].sort_values()[:N].index
             self.dataset.loc[pos_xmiss, x_miss] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def median(self, missing_rate: int = 10) -> pd.DataFrame:
@@ -227,4 +235,6 @@ class mMAR:
 
             self.dataset.loc[pos_xmiss, x_miss] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset

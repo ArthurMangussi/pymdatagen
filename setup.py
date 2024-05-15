@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.0.87',
+    version='0.0.9',
     keywords=['machine learning', 'preprocessing data'],
     license='MIT',
     author='Arthur Dantas Mangussi',
@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
 
-    python_requires='>=3.11', 
+    python_requires='>=3.10.12', 
     install_requires=[
         'numpy >= 1.25.0',
         'pandas >= 2.0.3',

@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '0.0.8'
+
 
 import warnings
 
@@ -24,6 +24,7 @@ class mMCAR:
         X (pd.DataFrame): The dataset to receive the missing data.
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
+        missTarget (bool, optional): A flag to generate missing into the target.
 
     Example Usage:
     ```python
@@ -35,7 +36,7 @@ class mMCAR:
     ```
     """
 
-    def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10):
+    def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10, missTarget:bool=False):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
         if not isinstance(y, np.ndarray):
@@ -51,8 +52,11 @@ class mMCAR:
         self.X = X
         self.y = y
         self.dataset = self.X.copy()
-        self.dataset['target'] = y
         self.missing_rate = missing_rate
+        self.missTarget = missTarget
+
+        if missTarget:
+            self.dataset['target'] = y
 
     def random(self) -> pd.DataFrame:
         """
@@ -117,4 +121,7 @@ class mMCAR:
                 n=1, p=self.missing_rate / 100, size=self.dataset.shape[0]
             ).astype(bool)
             self.dataset.loc[pos_xmiss, x_miss] = np.nan
+        
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset

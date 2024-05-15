@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '0.0.8'
+
 
 import numpy as np
 import pandas as pd
@@ -27,8 +27,6 @@ class FeatureChoice:
             x_obs = MathCalcs._find_correlation(X, y, x_miss)
 
             if x_obs == 'target':
-                print('Finding the most correlated feature execpt class')
-
                 x_obs = MathCalcs._find_correlation(X, y, x_miss, flag=True)
 
         return x_miss, x_obs
