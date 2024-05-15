@@ -7,7 +7,7 @@
 # =============================================================================
 
 __author__ = 'Arthur Dantas Mangussi'
-__version__ = '0.0.8'
+
 
 import warnings
 
@@ -30,6 +30,7 @@ class mMNAR:
     Keyword Args:
         n_xmiss (int, optional): The number of features in the dataset that will receive missing values. Default is the number of features in dataset.
         threshold (float, optional): The threshold to select the locations in feature (xmiss) to receive missing values where 0 indicates de lowest and 1 highest values. Default is 0
+        missTarget (bool, optional): A flag to generate missing into the target.
 
     Example Usage:
     ```python
@@ -49,13 +50,17 @@ class mMNAR:
         self.X = X
         self.y = y
         self.dataset = self.X.copy()
-        self.dataset['target'] = y
+        self.missTarget = kwargs.get('missTarget', False)
+
+        if self.missTarget:
+            self.dataset['target'] = y
 
         self.n = self.dataset.shape[0]
         self.p = self.dataset.shape[1]
 
         self.n_xmiss = kwargs.get('n_xmiss', self.p)
         self.threshold = kwargs.get('threshold', 0)
+               
 
     def random(self, missing_rate: int = 10, deterministic:bool = False):
         """
@@ -129,6 +134,8 @@ class mMNAR:
                 options_xmiss.remove(x_miss)
                 cont += 1
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def correlated(self, missing_rate: int = 10, deterministic:bool = False):
@@ -198,6 +205,8 @@ class mMNAR:
 
             self.dataset.loc[pos_xmiss, x_miss] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def median(self, missing_rate: int = 10, deterministic:bool = False):
@@ -231,8 +240,7 @@ class mMNAR:
 
         # For each column in dataset
         for col in self.dataset.columns:
-            cutK = 2 * mr
-            N = round(len(self.dataset) * cutK)
+            N = round(len(self.dataset) * mr)
 
             if len(self.dataset[col].unique()) == 2:  # Binary feature
                 g1_index = np.random.choice(
@@ -240,11 +248,7 @@ class mMNAR:
                     round(len(self.dataset) / 2),
                     replace=False,
                 )
-                g2_index = np.random.choice(
-                    self.dataset[col].index,
-                    round(len(self.dataset) / 2),
-                    replace=False,
-                )
+                g2_index = np.array([i for i in self.dataset[col].index if i not in g1_index])
 
             else:  # Continuos or ordinal feature
                 median_xobs = self.dataset[col].median()
@@ -252,19 +256,14 @@ class mMNAR:
                 g1 = self.dataset[col][self.dataset[col] <= median_xobs]
                 g2 = self.dataset[col][self.dataset[col] > median_xobs]
 
-                if len(g1) != len(
-                    g2
-                ):  # If median do not divide in equal-size groups
+                # If median do not divide in equal-size groups
+                if len(g1) != len(g2):  
                     g1_index = np.random.choice(
                         self.dataset[col].index,
                         round(len(self.dataset) / 2),
                         replace=False,
                     )
-                    g2_index = np.random.choice(
-                        self.dataset[col].index,
-                        round(len(self.dataset) / 2),
-                        replace=False,
-                    )
+                    g2_index = np.array([i for i in self.dataset[col].index if i not in g1_index])
                 else:
                     g1_index = g1.index
                     g2_index = g2.index
@@ -291,6 +290,8 @@ class mMNAR:
 
             self.dataset.loc[pos_xmiss, col] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def MBOUV(
@@ -307,9 +308,9 @@ class mMNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
-        Analysis. Submitted to Expert Systems with Applications.
+        [2] Pereira, R. C., Abreu, P. H., Rodrigues, P. P., Figueiredo, M. A. T., (2024). 
+        Imputation of data Missing Not at Random: Artificial generation and benchmark analysis. 
+        Expert Systems with Applications, 249(B), 123654.
 
 
         """
@@ -368,6 +369,8 @@ class mMNAR:
                 )
                 self.dataset.loc[ordered_indices[:num_mv], col] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def MBOV_randomness(
@@ -390,9 +393,9 @@ class mMNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
-        Analysis. Submitted to Expert Systems with Applications.
+        [2] Pereira, R. C., Abreu, P. H., Rodrigues, P. P., Figueiredo, M. A. T., (2024). 
+        Imputation of data Missing Not at Random: Artificial generation and benchmark analysis. 
+        Expert Systems with Applications, 249(B), 123654.
 
         """
         if not (0 <= randomness <= 0.5):
@@ -434,6 +437,8 @@ class mMNAR:
 
             self.dataset.loc[pos_xmis, col] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def MBOV_median(self, missing_rate: int = 10, columns: list = None):
@@ -450,9 +455,9 @@ class mMNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
-        Analysis. Submitted to Expert Systems with Applications.
+        [2] Pereira, R. C., Abreu, P. H., Rodrigues, P. P., Figueiredo, M. A. T., (2024). 
+        Imputation of data Missing Not at Random: Artificial generation and benchmark analysis. 
+        Expert Systems with Applications, 249(B), 123654.
 
         """
 
@@ -472,7 +477,7 @@ class mMNAR:
         N = round(len(self.dataset) * mr)
 
         for col in columns:
-            if col.dtype == 'object':
+            if self.dataset[col].dtype == 'object':
                 raise TypeError(
                     'Only continuos or ordinal feature are accepted'
                 )
@@ -482,6 +487,8 @@ class mMNAR:
             pos_xmis = np.argsort(np.abs(self.dataset[col] - median_att))[:N]
             self.dataset.loc[pos_xmis, col] = np.nan
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
 
     def MBIR(
@@ -504,9 +511,9 @@ class mMNAR:
             the MNAR mechanism.
 
         Reference:
-        [2] R. C. Pereira, P. H. Abreu, P. P. Rodrigues, and M. A. T. Figuereido. 2023.
-        Imputation of Data Missing Not At Random:Artificial Generation and Benchmark
-        Analysis. Submitted to Expert Systems with Applications.
+        [2] Pereira, R. C., Abreu, P. H., Rodrigues, P. P., Figueiredo, M. A. T., (2024). 
+        Imputation of data Missing Not at Random: Artificial generation and benchmark analysis. 
+        Expert Systems with Applications, 249(B), 123654.
 
         """
         if missing_rate >= 100:
@@ -567,4 +574,25 @@ class mMNAR:
             df_columns.remove(most_feature)
             self.dataset = self.dataset.drop(columns=most_feature)
 
+        if not self.missTarget:
+            self.dataset['target'] = self.y
         return self.dataset
+
+if __name__ == "__main__":
+
+    import pandas as pd
+    from sklearn.datasets import load_breast_cancer
+
+    # Load the data
+    wiscosin = load_breast_cancer()
+    wiscosin_df = pd.DataFrame(data=wiscosin.data, columns=wiscosin.feature_names)
+
+    X = wiscosin_df.copy()   # Features
+    y = wiscosin.target    # Label values
+
+    # Create a instance with missing rate equal to 20% in dataset under MNAR mechanism
+    generator = mMNAR(X=X, y=y, missTarget=False)
+
+    # Generate the missing data under MNAR mechanism
+    generate_data = generator.median(missing_rate=20)
+    print(generate_data.isna().sum())
