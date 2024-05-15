@@ -577,22 +577,3 @@ class mMNAR:
         if not self.missTarget:
             self.dataset['target'] = self.y
         return self.dataset
-
-if __name__ == "__main__":
-
-    import pandas as pd
-    from sklearn.datasets import load_breast_cancer
-
-    # Load the data
-    wiscosin = load_breast_cancer()
-    wiscosin_df = pd.DataFrame(data=wiscosin.data, columns=wiscosin.feature_names)
-
-    X = wiscosin_df.copy()   # Features
-    y = wiscosin.target    # Label values
-
-    # Create a instance with missing rate equal to 20% in dataset under MNAR mechanism
-    generator = mMNAR(X=X, y=y, missTarget=False)
-
-    # Generate the missing data under MNAR mechanism
-    generate_data = generator.median(missing_rate=20)
-    print(generate_data.isna().sum())
