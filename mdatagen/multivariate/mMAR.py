@@ -140,8 +140,6 @@ class mMAR:
                 'Features will be all NaN, you should decrease the missing rate'
             )
 
-        warnings.warn('Class do not have missing data')
-
         mr = missing_rate / 100
 
         pairs = FeatureChoice._make_pairs(self.X, self.y)

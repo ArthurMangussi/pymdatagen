@@ -86,7 +86,7 @@ class FeatureChoice:
         cont = 0
         while len(remaining_features) > 0:
             col = remaining_features[cont]
-            var_corr_id = MathCalcs._find_correlation(X, y, col, flag=True)
+            var_corr_id = matriz_correlacao_X[col].drop(col).abs().idxmax()
 
             if col in remaining_features and var_corr_id in remaining_features:
                 remaining_features = FeatureChoice._delete(
@@ -120,7 +120,7 @@ class FeatureChoice:
                         pairs, var_remaining, col_remaining
                     )
                     return pairs
-
+            
     @staticmethod
     def _find_most_correlated_feature_even(
         X: pd.DataFrame, y: np.array, pair_features
