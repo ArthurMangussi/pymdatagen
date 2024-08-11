@@ -25,15 +25,23 @@ pip install mdatagen
 
 ## API Usage
 
-API usage is described in each of the following sections in the [document]().
+API usage is described in each of the following sections
 
-- [Getting Started](https://moshi4.github.io/pyCirclize/getting_started/)
+- [Documentation about Univariate scenario](univariate.md)
+- [Documentation about Multivariate scenario](multivariate.md)
+- [MCAR univariate example](mcar_univariate_example.ipynb)
+- [MNAR univariate example](mnar_univariate_example.ipynb)
+- [MAR univariate example](mar_univariate_example.ipynb)
+- [MNAR Multivariate Examples](mnar_multivariate_examples.ipynb)
+- [Novel MNAR Multivariate mechanism](novel_mnar_multivariate_example.ipynb)
+- [Evaluation of Imputation Quality](evaluation_imputation_quality.ipynb)
+- [Visualization Plots](examples_plots.ipynb)
+- [Complete Pipeline Example](complete_pipeline_example.ipynb)
 
 
 ### Code examples
-More examples on how to use the mdatagen package, follow these [examples](examples/).
 Here, we provide a basic usage for MAR mechanism in both univariate and multivariate
-scenarios. Also, we illustrate how to use the Histogram plot and evaluate the imputation
+scenarios to getting started. Also, we illustrate how to use the Histogram plot and evaluate the imputation
 quality. 
 
 ### MAR univariate 
