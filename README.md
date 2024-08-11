@@ -1,6 +1,6 @@
 # mdatagen: A Python Library for the Generation of Artificial Missing Data
 
-[![Python3](https://img.shields.io/badge/Language-Python3-steelblue)]
+![Python3](https://img.shields.io/badge/Language-Python3-steelblue)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](docs/)
 [![Latest PyPI Version](https://img.shields.io/pypi/v/mdatagen.svg)](https://pypi.org/project/mdatagen/)
