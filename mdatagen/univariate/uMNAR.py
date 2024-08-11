@@ -6,13 +6,9 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import numpy as np
 import pandas as pd
 from mdatagen.utils.feature_choice import FeatureChoice
-
 
 # ==========================================================================
 class uMNAR:
@@ -99,7 +95,7 @@ class uMNAR:
 
         if deterministic:
             # Observed feature
-            ordered_id = np.argsort(x_f)
+            ordered_id = x_f.sort_values()
             pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.p, self.N)
 
         else:

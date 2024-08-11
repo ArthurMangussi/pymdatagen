@@ -6,9 +6,6 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import warnings
 
 import numpy as np
@@ -25,6 +22,7 @@ class mMCAR:
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
         missTarget (bool, optional): A flag to generate missing into the target.
+        seed (int, optional): The seed for the random number generator.
 
     Example Usage:
     ```python
@@ -36,7 +34,7 @@ class mMCAR:
     ```
     """
 
-    def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10, missTarget:bool=False):
+    def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10, missTarget:bool=False, seed:int=None):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
         if not isinstance(y, np.ndarray):
@@ -54,6 +52,10 @@ class mMCAR:
         self.dataset = self.X.copy()
         self.missing_rate = missing_rate
         self.missTarget = missTarget
+
+        self.seed = seed
+        if seed is not None:
+            np.random.seed(seed)
 
         if missTarget:
             self.dataset['target'] = y

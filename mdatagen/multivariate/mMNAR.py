@@ -6,9 +6,6 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import warnings
 
 import numpy as np
@@ -116,7 +113,7 @@ class mMNAR:
 
                 if deterministic:
                     # Observed feature
-                    ordered_id = np.argsort(x_f)
+                    ordered_id = x_f.sort_values()
                     pos_xmiss = FeatureChoice.miss_locations(
                     ordered_id, self.threshold, N
                 )
@@ -191,7 +188,7 @@ class mMNAR:
 
             if deterministic:
                 # Observed feature
-                ordered_id = np.argsort(x_f)
+                ordered_id = x_f.sort_values()
                 pos_xmiss = FeatureChoice.miss_locations(
                 ordered_id, self.threshold, N
             )
@@ -276,7 +273,7 @@ class mMNAR:
 
             if deterministic:
                 # Observed feature
-                ordered_id = np.argsort(x_f)
+                ordered_id = x_f.sort_values()
                 pos_xmiss = FeatureChoice.miss_locations(
                 ordered_id, self.threshold, N
             )

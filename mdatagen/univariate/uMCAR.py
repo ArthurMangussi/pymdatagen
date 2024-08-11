@@ -6,9 +6,6 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import numpy as np
 import pandas as pd
 from mdatagen.utils.math_calcs import MathCalcs
@@ -25,6 +22,7 @@ class uMCAR:
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
         x_miss (string, optional): The name of feature to insert the missing data.
         method (str, optional): The method to choose x_miss. If x_miss not informed by user, x_miss will be choose randomly. The options to choose xmiss is ["random", "correlated", "min", "max"]. Default is "random"
+        seed (int, optional): The seed for the random number generator.
 
 
     Example Usage:
@@ -45,6 +43,7 @@ class uMCAR:
         missing_rate: int = 10,
         x_miss: str = None,
         method: str = 'random',
+        seed: int = None
     ):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
@@ -64,6 +63,9 @@ class uMCAR:
         self.y = y
         self.dataset = self.X.copy()
         self.dataset['target'] = y
+        self.seed = seed
+        if seed is not None:
+            np.random.seed(seed)
 
         self.N = round(self.missing_rate * self.dataset.shape[0] / 100)
 

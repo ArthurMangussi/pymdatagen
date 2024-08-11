@@ -6,15 +6,11 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import random
 
 import numpy as np
 import pandas as pd
 from mdatagen.utils.feature_choice import FeatureChoice
-
 
 # ==========================================================================
 class uMAR:
@@ -26,7 +22,7 @@ class uMAR:
         y (np.array): The label values from dataset
         missing_rate (int, optional): The rate of missing data to be generated. Default is 10.
         x_miss (string): The name of feature to insert the missing data. If not informed, x_miss will be the feature most correlated with target
-
+        x_obs (string): The name of observed feature. If not informed, x_obs will be the feature most correlated with x_miss.
     Example Usage:
     ```python
     # Create an instance of the MAR class
@@ -44,6 +40,7 @@ class uMAR:
         y: np.array,
         missing_rate: int = 10,
         x_miss: str = None,
+        x_obs:str = None
     ):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
@@ -65,7 +62,7 @@ class uMAR:
         self.dataset['target'] = y
 
         self.x_miss, self.x_obs = FeatureChoice._define_xmiss(
-            self.X, self.y, x_miss
+            self.X, self.y, x_miss, x_obs
         )
         self.N = round(self.missing_rate * self.dataset.shape[0] / 100)
 

@@ -6,11 +6,6 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
-import warnings
-
 import numpy as np
 import pandas as pd
 from mdatagen.utils.feature_choice import FeatureChoice

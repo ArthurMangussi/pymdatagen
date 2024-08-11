@@ -6,18 +6,16 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import numpy as np
 import pandas as pd
 from sklearn.feature_selection import mutual_info_classif
 
-
+# ==========================================================================
 class MathCalcs:
+    # ------------------------------------------------------------------------
     @staticmethod
     def _find_correlation(
-        X: pd.DataFrame, y: np.array, colunm: str, flag=False
+        X: pd.DataFrame, y: np.array, colunm: str, flag:bool=False
     ):
         """
         Calculates the correlation matrix of the dataset and finds the feature that is most correlated with the given column.
@@ -48,6 +46,7 @@ class MathCalcs:
 
         return id_feature_mais_correlacionada
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def _nmi(X: pd.DataFrame, y: np.array):
         """
@@ -72,6 +71,7 @@ class MathCalcs:
 
         return [i for i in caracteristicas_ordenadas]
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def _calculate_correlation(X: pd.DataFrame, y: np.array):
         """
@@ -98,6 +98,7 @@ class MathCalcs:
 
         return matriz_correlacao, matriz_correlacao_X
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def define_groups(dataset, x_obs):
         g1_index = np.random.choice(

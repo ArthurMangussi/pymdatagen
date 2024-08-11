@@ -6,31 +6,29 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
-__author__ = 'Arthur Dantas Mangussi'
-
-
 import numpy as np
 import pandas as pd
 from mdatagen.utils.math_calcs import MathCalcs
 
-
+# ==========================================================================
 class FeatureChoice:
     @staticmethod
     def _define_xmiss(
-        X: pd.DataFrame, y: np.array, x_miss: str = None, flag=True
+        X: pd.DataFrame, y: np.array, x_miss: str = None, x_obs:str = None, flag:bool=True
     ):
         if not x_miss:
             x_miss = MathCalcs._find_correlation(X, y, 'target')
 
-        x_obs = None
-        if flag:
-            x_obs = MathCalcs._find_correlation(X, y, x_miss)
+        if not x_obs:
+            if flag:
+                x_obs = MathCalcs._find_correlation(X, y, x_miss)
 
-            if x_obs == 'target':
-                x_obs = MathCalcs._find_correlation(X, y, x_miss, flag=True)
+                if x_obs == 'target':
+                    x_obs = MathCalcs._find_correlation(X, y, x_miss, flag=True)
 
         return x_miss, x_obs
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def get_ordered_indices(col, dataset, ascending):
         x_f = dataset.loc[:, col].values
@@ -40,6 +38,7 @@ class FeatureChoice:
         else:
             return np.lexsort((tie_breaker, x_f))[::-1]
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def _delete(item: str, list_items: np.array) -> np.array:
         """
@@ -55,6 +54,7 @@ class FeatureChoice:
         mask = list_items != item
         return list_items[mask]
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def _add_var_remaining(pairs: list, var: str, col: str) -> list:
         """
@@ -74,6 +74,7 @@ class FeatureChoice:
 
         return pairs
 
+    # ------------------------------------------------------------------------
     def _make_pairs(X: pd.DataFrame, y: np.array):
 
         (
@@ -87,6 +88,12 @@ class FeatureChoice:
         while len(remaining_features) > 0:
             col = remaining_features[cont]
             var_corr_id = matriz_correlacao_X[col].drop(col).abs().idxmax()
+            try:
+                if np.isnan(var_corr_id):
+                   options = FeatureChoice._delete(col, remaining_features)
+                   var_corr_id = np.random.choice(options)
+            except TypeError as e:
+                pass
 
             if col in remaining_features and var_corr_id in remaining_features:
                 remaining_features = FeatureChoice._delete(
@@ -121,6 +128,7 @@ class FeatureChoice:
                     )
                     return pairs
             
+    # ------------------------------------------------------------------------
     @staticmethod
     def _find_most_correlated_feature_even(
         X: pd.DataFrame, y: np.array, pair_features
@@ -134,6 +142,7 @@ class FeatureChoice:
 
         return pair_features[0] if corr_0 > corr_1 else pair_features[1]
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def _find_most_correlated_feature_odd(
         X: pd.DataFrame, y: np.array, pair_features
@@ -158,6 +167,7 @@ class FeatureChoice:
 
         return [t[0] for t in sorted_correlations][:2]
 
+    # ------------------------------------------------------------------------
     @staticmethod
     def miss_locations(ordered_id, threshold, N):
 
@@ -165,6 +175,6 @@ class FeatureChoice:
 
         highest = [] if threshold == 0 else ordered_id[round(-threshold * N) :]
 
-        pos_xmiss = np.hstack([lowest, highest])
+        pos_xmiss = np.hstack([lowest.index, highest.index])
 
         return pos_xmiss

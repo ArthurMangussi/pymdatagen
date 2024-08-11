@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.0.91',
+    version='0.1.5',
     keywords=['machine learning', 'preprocessing data'],
     license='MIT',
     author='Arthur Dantas Mangussi',
@@ -23,5 +23,7 @@ setup(
     install_requires=[
         'numpy >= 1.25.0',
         'pandas >= 2.0.3',
-        'scikit-learn >= 1.3.0']
+        'scikit-learn >= 1.3.0',
+        'missingno >= 0.5.2',
+        'scipy >= 1.11.4']
 )
