@@ -27,16 +27,14 @@ pip install mdatagen
 
 API usage is described in each of the following sections
 
-- [Documentation about Univariate scenario](univariate.md)
-- [Documentation about Multivariate scenario](multivariate.md)
-- [MCAR univariate example](mcar_univariate_example.ipynb)
-- [MNAR univariate example](mnar_univariate_example.ipynb)
-- [MAR univariate example](mar_univariate_example.ipynb)
-- [MNAR Multivariate Examples](mnar_multivariate_examples.ipynb)
-- [Novel MNAR Multivariate mechanism](novel_mnar_multivariate_example.ipynb)
-- [Evaluation of Imputation Quality](evaluation_imputation_quality.ipynb)
-- [Visualization Plots](examples_plots.ipynb)
-- [Complete Pipeline Example](complete_pipeline_example.ipynb)
+- [MCAR univariate example](docs/mcar_univariate_example.ipynb)
+- [MNAR univariate example](docs/mnar_univariate_example.ipynb)
+- [MAR univariate example](docs/mar_univariate_example.ipynb)
+- [MNAR Multivariate Examples](docs/mnar_multivariate_examples.ipynb)
+- [Novel MNAR Multivariate mechanism](docs/novel_mnar_multivariate_example.ipynb)
+- [Evaluation of Imputation Quality](docs/evaluation_imputation_quality.ipynb)
+- [Visualization Plots](docs/examples_plots.ipynb)
+- [Complete Pipeline Example](docs/complete_pipeline_example.ipynb)
 
 
 ### Code examples
