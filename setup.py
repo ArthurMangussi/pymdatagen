@@ -7,14 +7,14 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.1.5',
+    version='0.1.6',
     keywords=['machine learning', 'preprocessing data'],
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     license='MIT',
     author='Arthur Dantas Mangussi',
     author_email='mangussiarthur@gmail.com',
     url='https://github.com/ArthurMangussi/pymdatagen',
-    
-    packages=find_packages(),
     description='mdatagen: A Python Library for the Generation of Artificial Missing Data',
     long_description=long_description,
     long_description_content_type='text/markdown',
