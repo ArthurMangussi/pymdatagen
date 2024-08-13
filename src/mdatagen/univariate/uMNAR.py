@@ -91,7 +91,7 @@ class uMNAR:
 
         """
 
-        x_f = self.dataset.loc[:, self.x_miss].values
+        x_f = self.dataset.loc[:, self.x_miss]
 
         if deterministic:
             # Observed feature

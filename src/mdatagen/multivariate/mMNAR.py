@@ -109,7 +109,7 @@ class mMNAR:
             x_miss = np.random.choice(options_xmiss)
 
             if x_miss not in xmiss_multiva:
-                x_f = self.dataset.loc[:, x_miss].values
+                x_f = self.dataset.loc[:, x_miss]
 
                 if deterministic:
                     # Observed feature
@@ -184,7 +184,7 @@ class mMNAR:
 
             N = round(len(self.dataset) * cutK)
 
-            x_f = self.dataset.loc[:, x_miss].values
+            x_f = self.dataset.loc[:, x_miss]
 
             if deterministic:
                 # Observed feature
@@ -267,9 +267,9 @@ class mMNAR:
 
             choice = np.random.choice([0, 1])
             if choice == 0:
-                x_f = self.dataset.loc[g1_index, col].values
+                x_f = self.dataset.loc[g1_index, col]
             else:
-                x_f = self.dataset.loc[g2_index, col].values
+                x_f = self.dataset.loc[g2_index, col]
 
             if deterministic:
                 # Observed feature
