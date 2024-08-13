@@ -175,6 +175,11 @@ class FeatureChoice:
 
         highest = [] if threshold == 0 else ordered_id[round(-threshold * N) :]
 
-        pos_xmiss = np.hstack([lowest.index, highest.index])
+        if isinstance(ordered_id, pd.Series):
+            pos_xmiss = np.hstack([lowest.index, highest.index])
+        elif isinstance(ordered_id, np.ndarray):
+            pos_xmiss = np.hstack([lowest, highest])
+        else:
+            raise TypeError('ordered_id must be pd.Series or np.array')
 
         return pos_xmiss
