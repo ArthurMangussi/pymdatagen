@@ -158,8 +158,6 @@ class mMAR:
             pos_xmiss = self.dataset[x_obs].sort_values()[:N].index
             self.dataset.loc[pos_xmiss, x_miss] = np.nan
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
         return self.dataset
 
     def median(self, missing_rate: int = 10) -> pd.DataFrame:

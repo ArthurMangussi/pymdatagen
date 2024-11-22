@@ -184,26 +184,24 @@ class mMNAR:
 
             N = round(len(self.dataset) * cutK)
 
-            x_f = self.dataset.loc[:, x_miss]
+            # Determine whether input is a single feature or a list of features
+            x_miss_list = [x_miss] if isinstance(x_miss, str) else x_miss
 
-            if deterministic:
-                # Observed feature
-                ordered_id = x_f.sort_values()
-                pos_xmiss = FeatureChoice.miss_locations(
-                ordered_id, self.threshold, N
-            )
+            for val in x_miss_list:
+                x_f = self.dataset.loc[:, val]
 
-            else:
-                # Unobserved random feature
-                ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
-                pos_xmiss = FeatureChoice.miss_locations(
-                ordered_id, self.threshold, N
-            )
+                # Sort values deterministically or randomly
+                if deterministic:
+                    ordered_id = x_f.sort_values()
+                else:
+                    ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
+                
+                # Get positions for missing data
+                pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.threshold, N)
+                
+                # Introduce missing values
+                self.dataset.loc[pos_xmiss, val] = np.nan
 
-            self.dataset.loc[pos_xmiss, x_miss] = np.nan
-
-        if not self.missTarget:
-            self.dataset['target'] = self.y
         return self.dataset
 
     def median(self, missing_rate: int = 10, deterministic:bool = False):
@@ -234,6 +232,9 @@ class mMNAR:
             )
 
         mr = missing_rate / 100
+
+        if not self.missTarget:
+            self.dataset['target'] = self.y
 
         # For each column in dataset
         for col in self.dataset.columns:
@@ -287,8 +288,6 @@ class mMNAR:
 
             self.dataset.loc[pos_xmiss, col] = np.nan
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
         return self.dataset
 
     def MBOUV(
@@ -574,22 +573,3 @@ class mMNAR:
         if not self.missTarget:
             self.dataset['target'] = self.y
         return self.dataset
-
-if __name__ == "__main__":
-    import numpy as np 
-    import pmlb
-    from time import perf_counter
-
-    def split_data(data):
-        df = data.copy()
-        X = df.drop(columns=["target"])
-        y = data["target"]
-
-        return X,np.array(y)
-
-    kddcup = pmlb.fetch_data('kddcup')
-    X_, y_ = split_data(kddcup)
-
-    time_init = perf_counter()
-    generator = mMNAR(X=X_, y=y_, missTarget=True)
-    gen_md = generator.correlated(missing_rate=45)
