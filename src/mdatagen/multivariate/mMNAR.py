@@ -164,7 +164,7 @@ class mMNAR:
             )
 
         # Creation of pairs/triples
-        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
+        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y, self.missTarget)
         mr = missing_rate / 100
 
         for pair in pairs:
@@ -172,7 +172,7 @@ class mMNAR:
                 cutK = 2 * mr
                 # Find the feature most correlated with the target
                 x_miss = FeatureChoice._find_most_correlated_feature_even(
-                    correlation_matrix, pair
+                    correlation_matrix, pair,
                 )
 
             else:
@@ -574,3 +574,22 @@ class mMNAR:
         if not self.missTarget:
             self.dataset['target'] = self.y
         return self.dataset
+
+if __name__ == "__main__":
+    import numpy as np 
+    import pmlb
+    from time import perf_counter
+
+    def split_data(data):
+        df = data.copy()
+        X = df.drop(columns=["target"])
+        y = data["target"]
+
+        return X,np.array(y)
+
+    kddcup = pmlb.fetch_data('kddcup')
+    X_, y_ = split_data(kddcup)
+
+    time_init = perf_counter()
+    generator = mMNAR(X=X_, y=y_, missTarget=True)
+    gen_md = generator.correlated(missing_rate=45)

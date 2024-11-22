@@ -78,18 +78,25 @@ class FeatureChoice:
     @staticmethod
     def _make_pairs(X: pd.DataFrame, y: np.ndarray, missTarget:bool=False)->list[tuple]:
         df = X.copy()
-        if missTarget:
-            df['target'] = y
-
+        df['target'] = y
+        
         # If correlation is NaN, we set to 0
-        correlation_matrix = df.corr().fillna(0)
-
-        # Flatten the correlation matrix and exclude self-correlations
-        correlations = (
-            correlation_matrix.where(correlation_matrix != 1.0)
-            .stack()
-            .reset_index()
-        )
+        correlation_matrix = df.corr().fillna(0)       
+        
+        if missTarget:
+            # Flatten the correlation matrix and exclude self-correlations
+                correlations = (
+                    correlation_matrix.where(correlation_matrix != 1.0)
+                    .stack()
+                    .reset_index()
+                )
+        else:
+            correlations = (
+                correlation_matrix.drop(columns="target", index="target").where(correlation_matrix != 1.0)
+                .stack()
+                .reset_index()
+            )
+            
         correlations.columns = ["Feature 1", "Feature 2", "Correlation"]
 
         # Sort by absolute correlation in descending order
@@ -101,7 +108,7 @@ class FeatureChoice:
 
         # Track the feature that is left out (if any)
         unpaired_feature = None
-
+        
         # Iterate through the sorted correlations to find the best pairs
         for _, row in correlations.iterrows():
             f1, f2 = row["Feature 1"], row["Feature 2"]

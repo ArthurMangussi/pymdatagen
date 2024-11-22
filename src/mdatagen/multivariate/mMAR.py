@@ -137,7 +137,7 @@ class mMAR:
 
         mr = missing_rate / 100
 
-        pairs, correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
+        pairs, correlation_matrix = FeatureChoice._make_pairs(self.X, self.y, self.missTarget)
 
         for pair in pairs:
             if len(pair) % 2 == 0:
@@ -190,7 +190,7 @@ class mMAR:
 
         mr = missing_rate / 100
 
-        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
+        pairs,_ = FeatureChoice._make_pairs(self.X, self.y, self.missTarget)
 
         for pair in pairs:
             x_obs = np.random.choice(pair)
