@@ -11,6 +11,7 @@ from typing import Optional
 from sklearn.metrics import (mean_absolute_error,
                              mean_squared_error,
                              mean_absolute_percentage_error,
+                             root_mean_squared_error,
                              r2_score
                             )
 from scipy.stats import kstest, pearsonr
@@ -104,8 +105,7 @@ class EvaluateImputation:
             "mean_absolute_percentage_error": self._mean_absolute_percentage_error,
             "normalize_mean_absolute_error": self._normalize_mean_absolute_error,
             "percentage_of_correct_prediction": self._percentage_of_correct_prediction,
-            "R2": self._r2_Score,
-            "matches":self._matches
+            "R2": self._r2_Score
         }
         
         self.metric_function = metrics.get(self.metric)
@@ -186,9 +186,9 @@ class EvaluateImputation:
         literature (2006–2017). Artif Intell Rev 53, 1487–1509. 
         https://doi.org/10.1007/s10462-019-09709-4
         """
-        rmse = mean_squared_error(y_true=self.original,
+        rmse = root_mean_squared_error(y_true=self.original,
                                   y_pred=self.data_imputed,
-                                  squared=True)
+                                  )
         return rmse
     
     # ------------------------------------------------------------------------

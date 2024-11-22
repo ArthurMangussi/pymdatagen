@@ -76,9 +76,10 @@ class FeatureChoice:
 
     # ------------------------------------------------------------------------
     @staticmethod
-    def _make_pairs(X: pd.DataFrame, y: np.ndarray)->list[tuple]:
+    def _make_pairs(X: pd.DataFrame, y: np.ndarray, missTarget:bool=False)->list[tuple]:
         df = X.copy()
-        df["target"] = y
+        if missTarget:
+            df['target'] = y
 
         # If correlation is NaN, we set to 0
         correlation_matrix = df.corr().fillna(0)
