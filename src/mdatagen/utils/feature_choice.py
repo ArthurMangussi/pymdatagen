@@ -75,85 +75,72 @@ class FeatureChoice:
         return pairs
 
     # ------------------------------------------------------------------------
-    def _make_pairs(X: pd.DataFrame, y: np.array):
+    @staticmethod
+    def _make_pairs(X: pd.DataFrame, y: np.ndarray)->list[tuple]:
+        df = X.copy()
+        df["target"] = y
 
-        (
-            matriz_correlacao,
-            matriz_correlacao_X,
-        ) = MathCalcs._calculate_correlation(X, y)
-        remaining_features = np.array(matriz_correlacao_X.columns)
+        # If correlation is NaN, we set to 0
+        correlation_matrix = df.corr().fillna(0)
+
+        # Flatten the correlation matrix and exclude self-correlations
+        correlations = (
+            correlation_matrix.where(correlation_matrix != 1.0)
+            .stack()
+            .reset_index()
+        )
+        correlations.columns = ["Feature 1", "Feature 2", "Correlation"]
+
+        # Sort by absolute correlation in descending order
+        correlations = correlations.sort_values(by="Correlation", key=abs, ascending=False).reset_index(drop=True)
+
+        # Initialize sets to track paired features and the final pairs
+        paired_features = set()
         pairs = []
 
-        cont = 0
-        while len(remaining_features) > 0:
-            col = remaining_features[cont]
-            var_corr_id = matriz_correlacao_X[col].drop(col).abs().idxmax()
-            try:
-                if np.isnan(var_corr_id):
-                   options = FeatureChoice._delete(col, remaining_features)
-                   var_corr_id = np.random.choice(options)
-            except TypeError as e:
-                pass
+        # Track the feature that is left out (if any)
+        unpaired_feature = None
 
-            if col in remaining_features and var_corr_id in remaining_features:
-                remaining_features = FeatureChoice._delete(
-                    col, remaining_features
-                )
-                remaining_features = FeatureChoice._delete(
-                    var_corr_id, remaining_features
-                )
-                matriz_correlacao_X = matriz_correlacao_X.drop(
-                    index=col, columns=col
-                )
-                matriz_correlacao_X = matriz_correlacao_X.drop(
-                    index=var_corr_id, columns=var_corr_id
-                )
-                pairs.append((col, var_corr_id))
+        # Iterate through the sorted correlations to find the best pairs
+        for _, row in correlations.iterrows():
+            f1, f2 = row["Feature 1"], row["Feature 2"]
+            if f1 not in paired_features and f2 not in paired_features:
+                pairs.append((f1, f2))
+                paired_features.update([f1, f2])
 
-                # Number of features is even
-                if len(remaining_features) == 2:
-                    pairs.append(
-                        (remaining_features[0], remaining_features[1])
-                    )
-                    return pairs
+        # Identify the unpaired feature, if there is any
+        all_features = set(correlations['Feature 1']).union(set(correlations['Feature 2']))
+        unpaired_feature = list(all_features - paired_features)
 
-                elif len(remaining_features) == 1:  # Number of features is odd
-                    # Find which is most correlated with the remaining feature
-                    col_remaining = remaining_features[cont]
-                    var_remaining = MathCalcs._find_correlation(
-                        X, y, col_remaining, flag=True
-                    )
-                    pairs = FeatureChoice._add_var_remaining(
-                        pairs, var_remaining, col_remaining
-                    )
-                    return pairs
+        # If there is an unpaired feature, add it to the pair with the highest correlation
+        if unpaired_feature:
+            # The remaining highest correlation pair is the first in the sorted list
+            remaining_pair = pairs[0]  # Pair with the highest correlation (already sorted)
+            # Add the unpaired feature to this pair
+            pairs[0] = (remaining_pair[0], remaining_pair[1], unpaired_feature[0])
+
+        return pairs, correlation_matrix
             
     # ------------------------------------------------------------------------
     @staticmethod
     def _find_most_correlated_feature_even(
-        X: pd.DataFrame, y: np.array, pair_features
+        correlation_matrix:pd.DataFrame, pair_features:list[tuple]
     ):
-        (
-            matriz_correlacao,
-            matriz_correlacao_X,
-        ) = MathCalcs._calculate_correlation(X, y)
-        corr_0 = abs(matriz_correlacao['target'][pair_features[0]])
-        corr_1 = abs(matriz_correlacao['target'][pair_features[1]])
+        
+        corr_0 = abs(correlation_matrix['target'][pair_features[0]])
+        corr_1 = abs(correlation_matrix['target'][pair_features[1]])
 
         return pair_features[0] if corr_0 > corr_1 else pair_features[1]
 
     # ------------------------------------------------------------------------
     @staticmethod
     def _find_most_correlated_feature_odd(
-        X: pd.DataFrame, y: np.array, pair_features
+        correlation_matrix:pd.DataFrame, pair_features:list[tuple]
     ):
-        (
-            matriz_correlacao,
-            matriz_correlacao_X,
-        ) = MathCalcs._calculate_correlation(X, y)
-        corr_0 = abs(matriz_correlacao['target'][pair_features[0]])
-        corr_1 = abs(matriz_correlacao['target'][pair_features[1]])
-        corr_2 = abs(matriz_correlacao['target'][pair_features[2]])
+        
+        corr_0 = abs(correlation_matrix['target'][pair_features[0]])
+        corr_1 = abs(correlation_matrix['target'][pair_features[1]])
+        corr_2 = abs(correlation_matrix['target'][pair_features[2]])
 
         correlations = [
             (pair_features[0], corr_0),

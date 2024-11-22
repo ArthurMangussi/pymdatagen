@@ -164,7 +164,7 @@ class mMNAR:
             )
 
         # Creation of pairs/triples
-        pairs = FeatureChoice._make_pairs(self.X, self.y)
+        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
         mr = missing_rate / 100
 
         for pair in pairs:
@@ -172,14 +172,14 @@ class mMNAR:
                 cutK = 2 * mr
                 # Find the feature most correlated with the target
                 x_miss = FeatureChoice._find_most_correlated_feature_even(
-                    self.X, self.y, pair
+                    correlation_matrix, pair
                 )
 
             else:
                 cutK = 1.5 * mr
                 # Find the feature most correlated with the target
                 x_miss = FeatureChoice._find_most_correlated_feature_odd(
-                    self.X, self.y, pair
+                    correlation_matrix, pair
                 )
 
             N = round(len(self.dataset) * cutK)

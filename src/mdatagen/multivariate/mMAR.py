@@ -137,19 +137,19 @@ class mMAR:
 
         mr = missing_rate / 100
 
-        pairs = FeatureChoice._make_pairs(self.X, self.y)
+        pairs, correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
 
         for pair in pairs:
             if len(pair) % 2 == 0:
                 cutK = 2 * mr
                 x_miss = FeatureChoice._find_most_correlated_feature_even(
-                    self.X, self.y, pair
+                    correlation_matrix, pair
                 )
                 x_obs = next(elem for elem in pair if elem != x_miss)
 
             else:
                 x_miss = FeatureChoice._find_most_correlated_feature_odd(
-                    self.X, self.y, pair
+                   correlation_matrix, pair
                 )
                 x_obs = set(pair).difference(x_miss).pop()
                 cutK = 1.5 * mr
@@ -190,7 +190,7 @@ class mMAR:
 
         mr = missing_rate / 100
 
-        pairs = FeatureChoice._make_pairs(self.X, self.y)
+        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y)
 
         for pair in pairs:
             x_obs = np.random.choice(pair)
