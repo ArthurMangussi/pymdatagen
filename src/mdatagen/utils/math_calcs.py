@@ -101,10 +101,11 @@ class MathCalcs:
     # ------------------------------------------------------------------------
     @staticmethod
     def define_groups(dataset, x_obs):
-        g1_index = np.random.choice(
-            dataset[x_obs].index, round(len(dataset) / 2), replace=False
-        )
-        g2_index = np.array([i for i in dataset[x_obs].index if i not in g1_index])
+        
+        indices = dataset[x_obs].index.to_numpy()
+        n = len(indices)
+        g1_index = np.random.choice(indices, n // 2, replace=False)
+        g2_index = np.setdiff1d(indices, g1_index, assume_unique=True)
 
         g1 = dataset.loc[g1_index, x_obs]
         g2 = dataset.loc[g2_index, x_obs]
