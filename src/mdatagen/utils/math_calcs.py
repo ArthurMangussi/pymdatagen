@@ -101,7 +101,6 @@ class MathCalcs:
     # ------------------------------------------------------------------------
     @staticmethod
     def define_groups(dataset, x_obs):
-        
         indices = dataset[x_obs].index.to_numpy()
         n = len(indices)
         g1_index = np.random.choice(indices, n // 2, replace=False)

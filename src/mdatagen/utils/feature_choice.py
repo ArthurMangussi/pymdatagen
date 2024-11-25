@@ -14,7 +14,7 @@ from mdatagen.utils.math_calcs import MathCalcs
 class FeatureChoice:
     @staticmethod
     def _define_xmiss(
-        X: pd.DataFrame, y: np.array, x_miss: str = None, x_obs:str = None, flag:bool=True
+        X: pd.DataFrame, y: np.ndarray, x_miss: str = None, x_obs:str = None, flag:bool=True
     ):
         if not x_miss:
             x_miss = MathCalcs._find_correlation(X, y, 'target')
@@ -40,7 +40,7 @@ class FeatureChoice:
 
     # ------------------------------------------------------------------------
     @staticmethod
-    def _delete(item: str, list_items: np.array) -> np.array:
+    def _delete(item: str, list_items: np.ndarray) -> np.ndarray:
         """
         Remove the specified item from the list of items.
 
@@ -112,7 +112,7 @@ class FeatureChoice:
         # Iterate through the sorted correlations to find the best pairs
         for _, row in correlations.iterrows():
             f1, f2 = row["Feature 1"], row["Feature 2"]
-            if f1 not in paired_features and f2 not in paired_features:
+            if f1 != f2 and f1 not in paired_features and f2 not in paired_features:
                 pairs.append((f1, f2))
                 paired_features.update([f1, f2])
 
