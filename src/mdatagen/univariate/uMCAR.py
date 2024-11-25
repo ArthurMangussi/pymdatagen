@@ -39,7 +39,7 @@ class uMCAR:
     def __init__(
         self,
         X: pd.DataFrame,
-        y: np.array,
+        y: np.ndarray,
         missing_rate: int = 10,
         x_miss: str = None,
         method: str = 'random',
