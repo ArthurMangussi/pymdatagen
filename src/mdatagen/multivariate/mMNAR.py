@@ -202,6 +202,7 @@ class mMNAR:
         IEEE Access 7: 11651–67.
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         # Creation of pairs/triples
         pairs,correlation_matrix = FeatureChoice._make_pairs(dataset_chunk, y_chunk, missTarget)
         mr = missing_rate / 100
@@ -227,7 +228,10 @@ class mMNAR:
             x_miss_list = [x_miss] if isinstance(x_miss, str) else x_miss
 
             for val in x_miss_list:
-                x_f = dataset_chunk.loc[:, val]
+                try:
+                    x_f = dataset_chunk.loc[:, val]
+                except KeyError as error:
+                    print("Caiu aqui")
 
                 # Sort values deterministically or randomly
                 if deterministic:
@@ -266,6 +270,7 @@ class mMNAR:
         IEEE Access 7: 11651–67.
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         mr = missing_rate / 100
 
         if not missTarget:
@@ -332,7 +337,8 @@ class mMNAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
-        
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
+
         if depend_on_external is None:
             depend_on_external = []
 
@@ -407,6 +413,7 @@ class mMNAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         mr = missing_rate / 100
         N = round(len(dataset_chunk) * mr)
         aux_index = list(dataset_chunk.index)
@@ -455,6 +462,7 @@ class mMNAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         mr = missing_rate / 100
         N = round(len(dataset_chunk) * mr)
 
@@ -494,7 +502,7 @@ class mMNAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
-
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         mr = missing_rate / 100
         N = round(len(dataset_chunk) * mr)
 
@@ -544,7 +552,7 @@ class mMNAR:
         
         return dataset_chunk
     
-    def random(self, missing_rate: int = 10):
+    def random(self, missing_rate: int = 10,deterministic:bool = True):
         """Generate missing data using parallel processing."""
         if missing_rate >= 100:
             raise ValueError(
@@ -554,7 +562,7 @@ class mMNAR:
             raise ValueError('Missing rate must be between [0,100]')
 
         chunks = self._set_chuck_size(missing_rate=missing_rate, 
-                                      deterministic=None,
+                                      deterministic=deterministic,
                                       depend_on_external=None,
                                       ascending=None,
                                       randomness=None,
@@ -761,6 +769,7 @@ class mMNAR:
 if __name__ == "__main__":
     import numpy as np 
     import pmlb
+    import os
 
     # Function to help split data
     def split_data(data):
@@ -775,6 +784,6 @@ if __name__ == "__main__":
     X_, y_ = split_data(kddcup)
 
 
-    generator = mMNAR(X=X_, y=y_, n_Threads=2)
-    gen_md = generator.MBOV_median(missing_rate=10)
+    generator = mMNAR(X=X_, y=y_, n_Threads=os.cpu_count())
+    gen_md = generator.MBOV_randomness(missing_rate=35, columns=X_.columns)
     print(sum(gen_md.isna().sum()) / (np.shape(gen_md)[0] * np.shape(gen_md)[1]))

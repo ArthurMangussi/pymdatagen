@@ -151,6 +151,7 @@ class mMAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
         mr = missing_rate / 100
 
         pairs, correlation_matrix = FeatureChoice._make_pairs(dataset_chunk, y_chunk, missTarget)
@@ -198,6 +199,7 @@ class mMAR:
 
         """
         dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget = args
+        dataset_chunk = dataset_chunk.reset_index(drop=True)
 
         mr = missing_rate / 100
 
@@ -310,6 +312,6 @@ if __name__ == "__main__":
     X_, y_ = split_data(kddcup)
 
 
-    generator = mMAR(X=X_, y=y_,n_Threads=1)
-    gen_md = generator.correlated(missing_rate=10)
+    generator = mMAR(X=X_, y=y_,n_Threads=5)
+    gen_md = generator.median(missing_rate=10)
     print(sum(gen_md.isna().sum()) / (np.shape(gen_md)[0] * np.shape(gen_md)[1]))
