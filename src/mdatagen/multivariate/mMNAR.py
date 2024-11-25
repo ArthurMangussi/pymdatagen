@@ -12,7 +12,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import mannwhitneyu
 from mdatagen.utils.feature_choice import FeatureChoice
+from mdatagen.utils.math_calcs import MathCalcs
 
+from multiprocessing.pool import Pool
 
 # ==========================================================================
 class mMNAR:
@@ -39,7 +41,13 @@ class mMNAR:
     ```
     """
 
-    def __init__(self, X: pd.DataFrame, y: np.array, **kwargs):
+    def __init__(self, 
+                 X: pd.DataFrame, 
+                 y: np.ndarray, 
+                 threshold:float=0, 
+                 n_xmiss:int=2,
+                 missTarget:bool = False,
+                 n_Threads:int = 1):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
         if not isinstance(y, np.ndarray):
@@ -47,19 +55,57 @@ class mMNAR:
         self.X = X
         self.y = y
         self.dataset = self.X.copy()
-        self.missTarget = kwargs.get('missTarget', False)
+        self.missTarget = missTarget
+        self.n_Threads = n_Threads
 
         if self.missTarget:
             self.dataset['target'] = y
 
-        self.n = self.dataset.shape[0]
-        self.p = self.dataset.shape[1]
+        self.n_xmiss = n_xmiss
+        self.threshold = threshold
+        
 
-        self.n_xmiss = kwargs.get('n_xmiss', self.p)
-        self.threshold = kwargs.get('threshold', 0)
-               
+    def _set_chuck_size(self, 
+                        missing_rate, 
+                        deterministic,
+                        depend_on_external, 
+                        ascending,
+                        randomness,
+                        columns,
+                        statistical_method)->list:
+        """
+        Split the dataset into chunks for parallel processing.
 
-    def random(self, missing_rate: int = 10, deterministic:bool = False):
+        Args:
+            missing_rate (int): The rate of missing data to be generated.
+
+        Returns:
+            list: A list of tuples, each containing a chunk of the dataset
+                  and associated parameters for processing.
+        """
+        n_chunks = self.n_Threads
+        chunk_size = len(self.dataset) // n_chunks
+        chunks = [
+            (
+                self.dataset.iloc[i:i + chunk_size].copy(),
+                self.n_xmiss,
+                missing_rate,
+                self.y[i:i + chunk_size],
+                self.missTarget,
+                self.threshold,
+                deterministic,
+                depend_on_external,
+                ascending,
+                randomness,
+                columns,
+                statistical_method
+            )
+            for i in range(0, len(self.dataset), chunk_size)
+            ]
+        return chunks        
+
+    @staticmethod
+    def _random_strategy_to_generate_md(args):
         """
         Function to randomly choose the feature (x_miss) in dataset for generate missing
         data. The miss locations on x_miss is the lower values based on unobserved feature
@@ -80,62 +126,60 @@ class mMNAR:
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
-
-        if missing_rate >= 100:
-            raise ValueError(
-                'Missing Rate is too high, the whole feature will be deleted!'
-            )
-        elif missing_rate < 0:
-            raise ValueError('Missing rate must be between [0,100]')
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
         mr = missing_rate / 100
+        n = dataset_chunk.shape[0]
+        p = dataset_chunk.shape[1]
+
         cont = 0
-        N = round((self.n * self.p * mr) / self.n_xmiss)
+        N = round((n * p * mr) / n_xmiss)
         xmiss_multiva = []
 
-        if self.n_xmiss > self.p:
+        if n_xmiss > p:
             raise ValueError(
                 'n_xmiss must be lower than number of feature in dataset'
             )
-        elif N > self.n:
+        elif N > n:
             raise ValueError(
-                f'FEATURES will be all NaN ({N}>{self.n}), you should increase the number of features that will receive missing data'
+                f'FEATURES will be all NaN ({N}>{n}), you should increase the number of features that will receive missing data'
             )
 
-        options_xmiss = list(self.dataset.columns.copy())
+        options_xmiss = list(dataset_chunk.columns.copy())
 
-        while cont < self.n_xmiss:
+        while cont < n_xmiss:
             # Random choice for determining feature
             x_miss = np.random.choice(options_xmiss)
 
             if x_miss not in xmiss_multiva:
-                x_f = self.dataset.loc[:, x_miss]
+                x_f = dataset_chunk.loc[:, x_miss]
 
                 if deterministic:
                     # Observed feature
                     ordered_id = x_f.sort_values()
                     pos_xmiss = FeatureChoice.miss_locations(
-                    ordered_id, self.threshold, N
+                    ordered_id, threshold, N
                 )
 
                 else:
                     # Unobserved random feature
                     ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
                     pos_xmiss = FeatureChoice.miss_locations(
-                    ordered_id, self.threshold, N
+                    ordered_id, threshold, N
                 )
 
-                self.dataset.loc[pos_xmiss, x_miss] = np.nan
+                dataset_chunk.loc[pos_xmiss, x_miss] = np.nan
 
                 xmiss_multiva.append(x_miss)
                 options_xmiss.remove(x_miss)
                 cont += 1
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
-        return self.dataset
+        if not missTarget:
+            dataset_chunk['target'] = y_chunk
 
-    def correlated(self, missing_rate: int = 10, deterministic:bool = False):
+        return dataset_chunk
+    
+    @staticmethod
+    def _correlated_strategy_to_generate_md(args):
         """
         Function to generate missing data in dataset based on correlated pair.
         The feature (x_miss) most correlated with the class for each pair will
@@ -157,14 +201,9 @@ class mMNAR:
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
-
-        if missing_rate >= 50:
-            raise ValueError(
-                'Features will be all NaN, you should decrease the missing rate'
-            )
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
         # Creation of pairs/triples
-        pairs,correlation_matrix = FeatureChoice._make_pairs(self.X, self.y, self.missTarget)
+        pairs,correlation_matrix = FeatureChoice._make_pairs(dataset_chunk, y_chunk, missTarget)
         mr = missing_rate / 100
 
         for pair in pairs:
@@ -182,13 +221,13 @@ class mMNAR:
                     correlation_matrix, pair
                 )
 
-            N = round(len(self.dataset) * cutK)
+            N = round(len(dataset_chunk) * cutK)
 
             # Determine whether input is a single feature or a list of features
             x_miss_list = [x_miss] if isinstance(x_miss, str) else x_miss
 
             for val in x_miss_list:
-                x_f = self.dataset.loc[:, val]
+                x_f = dataset_chunk.loc[:, val]
 
                 # Sort values deterministically or randomly
                 if deterministic:
@@ -197,14 +236,15 @@ class mMNAR:
                     ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
                 
                 # Get positions for missing data
-                pos_xmiss = FeatureChoice.miss_locations(ordered_id, self.threshold, N)
+                pos_xmiss = FeatureChoice.miss_locations(ordered_id, threshold, N)
                 
                 # Introduce missing values
-                self.dataset.loc[pos_xmiss, val] = np.nan
+                dataset_chunk.loc[pos_xmiss, val] = np.nan
 
-        return self.dataset
-
-    def median(self, missing_rate: int = 10, deterministic:bool = False):
+        return dataset_chunk
+    
+    @staticmethod
+    def _median_strategy_to_generate_md(args):
         """
         Function to generate missing data in all dataset based on median from
         each feature. The miss locations are chosen by lower values from a unobserved feature
@@ -225,74 +265,56 @@ class mMNAR:
         P. H. Abreu. 2019. Generating Synthetic Missing Data: A Review by Missing Mechanism.
         IEEE Access 7: 11651–67.
         """
-
-        if missing_rate >= 50:
-            raise ValueError(
-                'Features will be all NaN, you should decrease the missing rate'
-            )
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
         mr = missing_rate / 100
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
+        if not missTarget:
+            dataset_chunk['target'] = y_chunk
 
         # For each column in dataset
-        for col in self.dataset.columns:
-            N = round(len(self.dataset) * mr)
+        for col in dataset_chunk.columns:
+            N = round(len(dataset_chunk) * mr)
 
-            if len(self.dataset[col].unique()) == 2:  # Binary feature
-                g1_index = np.random.choice(
-                    self.dataset[col].index,
-                    round(len(self.dataset) / 2),
-                    replace=False,
-                )
-                g2_index = np.array([i for i in self.dataset[col].index if i not in g1_index])
+            if len(dataset_chunk[col].unique()) == 2:  # Binary feature
+                g1, g2 = MathCalcs.define_groups(dataset_chunk, col)
 
             else:  # Continuos or ordinal feature
-                median_xobs = self.dataset[col].median()
+                median_xobs = dataset_chunk[col].median()
 
-                g1 = self.dataset[col][self.dataset[col] <= median_xobs]
-                g2 = self.dataset[col][self.dataset[col] > median_xobs]
+                g1 = dataset_chunk[col][dataset_chunk[col] <= median_xobs]
+                g2 = dataset_chunk[col][dataset_chunk[col] > median_xobs]
 
                 # If median do not divide in equal-size groups
                 if len(g1) != len(g2):  
-                    g1_index = np.random.choice(
-                        self.dataset[col].index,
-                        round(len(self.dataset) / 2),
-                        replace=False,
-                    )
-                    g2_index = np.array([i for i in self.dataset[col].index if i not in g1_index])
-                else:
-                    g1_index = g1.index
-                    g2_index = g2.index
+                    g1, g2 = MathCalcs.define_groups(dataset_chunk, col)
 
             choice = np.random.choice([0, 1])
             if choice == 0:
-                x_f = self.dataset.loc[g1_index, col]
+                g1_index = g1.index
+                x_f = dataset_chunk.loc[g1_index, col]
             else:
-                x_f = self.dataset.loc[g2_index, col]
+                g2_index = g2.index
+                x_f = dataset_chunk.loc[g2_index, col]
 
             if deterministic:
                 # Observed feature
                 ordered_id = x_f.sort_values()
                 pos_xmiss = FeatureChoice.miss_locations(
-                ordered_id, self.threshold, N
+                ordered_id, threshold, N
             )
 
             else:
                 # Unobserved random feature
                 ordered_id = np.lexsort((np.random.random(x_f.size), x_f))
                 pos_xmiss = FeatureChoice.miss_locations(
-                ordered_id, self.threshold, N
+                ordered_id, threshold, N
             )
 
-            self.dataset.loc[pos_xmiss, col] = np.nan
-
-        return self.dataset
-
-    def MBOUV(
-        self, missing_rate: int = 10, depend_on_external=None, ascending=True
-    ):
+            dataset_chunk.loc[pos_xmiss, col] = np.nan
+        return dataset_chunk
+    
+    @staticmethod
+    def _MBOUV_strategy_to_generate_md(args):
         """
         Function to generate missing data based on Missigness Based on Own and Unobserved Values (MBOUV).
 
@@ -308,29 +330,25 @@ class mMNAR:
         Imputation of data Missing Not at Random: Artificial generation and benchmark analysis. 
         Expert Systems with Applications, 249(B), 123654.
 
-
         """
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
+        
         if depend_on_external is None:
             depend_on_external = []
 
-        if missing_rate > 90:
-            raise ValueError(
-                'Maximum missing rate per feature must be clipped at 90%'
-            )
-        elif missing_rate < 0:
-            raise ValueError('Missing rate must be between [0,100]')
-
+        n = dataset_chunk.shape[0]
+        p = dataset_chunk.shape[1]    
+        
         mr = missing_rate / 100
-        N = round(mr * self.n * self.p)
+        N = round(mr * n * p)
 
         # With moderate missing rates (up to 60%), it never happens.
-        max_mvs_feat = round(min(mr + (mr / 2.0), 0.9) * self.n)
+        max_mvs_feat = round(min(mr + (mr / 2.0), 0.9) * n)
 
         # Randomly distribute missing values by the features.
-        num_mvs_per_feat = np.zeros(self.p)
+        num_mvs_per_feat = np.zeros(p)
         while N > 0:
-            for i in range(self.p):
+            for i in range(p):
                 if num_mvs_per_feat[i] < max_mvs_feat:
                     num_mvs_it = np.random.randint(
                         0, min(max_mvs_feat - num_mvs_per_feat[i] + 1, N + 1)
@@ -341,11 +359,11 @@ class mMNAR:
                         break
 
         np.random.shuffle(num_mvs_per_feat)
-        hidden_f = np.random.normal(size=self.n)
+        hidden_f = np.random.normal(size=n)
         tie_breaker = np.random.random(hidden_f.size)
 
         # Amputate the values.
-        for i, col in enumerate(self.dataset.columns.values):
+        for i, col in enumerate(dataset_chunk.columns.values):
             num_mv = round(num_mvs_per_feat[i])
             num_mv = num_mv if num_mv > 0 else 0
 
@@ -357,24 +375,18 @@ class mMNAR:
                 indices_start = np.lexsort((tie_breaker, hidden_f))[:start_n]
                 indices_end = np.lexsort((tie_breaker, -hidden_f))[:end_n]
 
-                self.dataset.loc[indices_start, col] = np.nan
-                self.dataset.loc[indices_end, col] = np.nan
+                dataset_chunk.loc[indices_start, col] = np.nan
+                dataset_chunk.loc[indices_end, col] = np.nan
             else:
                 ordered_indices = FeatureChoice.get_ordered_indices(
-                    col, self.dataset, ascending
+                    col, dataset_chunk, ascending
                 )
-                self.dataset.loc[ordered_indices[:num_mv], col] = np.nan
+                dataset_chunk.loc[ordered_indices[:num_mv], col] = np.nan
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
-        return self.dataset
-
-    def MBOV_randomness(
-        self,
-        missing_rate: int = 10,
-        randomness: float = 0,
-        columns: list = None
-    ):
+        return dataset_chunk
+    
+    @staticmethod
+    def _MBOV_randomness_strategy_to_generate_md(args):
         """
         Function to generate missing data based on Missigness Based on Own Values (MBOV) using
         a randomess to choose miss locations in each feature.
@@ -394,28 +406,14 @@ class mMNAR:
         Expert Systems with Applications, 249(B), 123654.
 
         """
-        if not (0 <= randomness <= 0.5):
-            raise ValueError('randomness must be in range [0,0.5]')
-
-        if columns is None:
-            raise TypeError(
-                'You must inform columns from dataset to generate missing data'
-            )
-
-        if missing_rate >= 100:
-            raise ValueError(
-                'Missing Rate is too high, the whole feature will be deleted!'
-            )
-        elif missing_rate < 0:
-            raise ValueError('Missing rate must be between [0,100]')
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
         mr = missing_rate / 100
-        N = round(len(self.dataset) * mr)
-        aux_index = list(self.dataset.index)
+        N = round(len(dataset_chunk) * mr)
+        aux_index = list(dataset_chunk.index)
 
         for col in columns:
             pos_xmis_deterministic = (
-                self.dataset[col]
+                dataset_chunk[col]
                 .sort_values()[: round((1 - randomness) * N)]
                 .index
             )
@@ -431,13 +429,13 @@ class mMNAR:
                 [pos_xmis_deterministic, pos_xmiss_randomness]
             )
 
-            self.dataset.loc[pos_xmis, col] = np.nan
+            dataset_chunk.loc[pos_xmis, col] = np.nan
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
-        return self.dataset
+        return dataset_chunk
 
-    def MBOV_median(self, missing_rate: int = 10, columns: list = None):
+    
+    @staticmethod
+    def _MBOV_median_strategy_to_generate_md(args):
         """
         Function to generate missing data based on Missigness Based on Own Values (MBOV) using
         a median to choose miss locations in each feature.
@@ -456,43 +454,26 @@ class mMNAR:
         Expert Systems with Applications, 249(B), 123654.
 
         """
-
-        if missing_rate >= 100:
-            raise ValueError(
-                'Missing Rate is too high, the whole feature will be deleted!'
-            )
-        elif missing_rate < 0:
-            raise ValueError('Missing rate must be between [0,100]')
-
-        if columns is None:
-            raise TypeError(
-                'You must inform columns from dataset to generate missing data'
-            )
-
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
         mr = missing_rate / 100
-        N = round(len(self.dataset) * mr)
+        N = round(len(dataset_chunk) * mr)
 
         for col in columns:
-            if self.dataset[col].dtype == 'object':
+            if dataset_chunk[col].dtype == 'object':
                 raise TypeError(
                     'Only continuos or ordinal feature are accepted'
                 )
 
-            median_att = self.dataset[col].median()
+            median_att = dataset_chunk[col].median()
 
-            pos_xmis = np.argsort(np.abs(self.dataset[col] - median_att))[:N]
-            self.dataset.loc[pos_xmis, col] = np.nan
+            pos_xmis = np.argsort(np.abs(dataset_chunk[col] - median_att))[:N]
+            dataset_chunk.loc[pos_xmis, col] = np.nan
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
-        return self.dataset
-
-    def MBIR(
-        self,
-        missing_rate: int = 10,
-        columns: list = None,
-        statistical_method: str = 'Mann-Whitney',
-    ):
+        return dataset_chunk
+        
+    
+    @staticmethod
+    def _MBIR_strategy_to_generate_md(args):
         """
         Function to generate missing data based on Missingness Based on Intra-Relation (MBIR).
 
@@ -512,32 +493,22 @@ class mMNAR:
         Expert Systems with Applications, 249(B), 123654.
 
         """
-        if missing_rate >= 100:
-            raise ValueError(
-                'Missing Rate is too high, the whole feature will be deleted!'
-            )
-        elif missing_rate < 0:
-            raise ValueError('Missing rate must be between [0,100]')
-
-        if columns is None:
-            raise TypeError(
-                'You must inform columns from dataset to generate missing data'
-            )
-
-        elif set(columns) == set(self.dataset):
-            warnings.warn('All dataset will be drop', UserWarning)
+        dataset_chunk, n_xmiss, missing_rate, y_chunk, missTarget, threshold, deterministic,depend_on_external, ascending,randomness,columns,statistical_method = args
 
         mr = missing_rate / 100
-        N = round(len(self.dataset) * mr)
+        N = round(len(dataset_chunk) * mr)
 
-        df_columns = self.dataset.columns.tolist()
+        if not missTarget:
+            dataset_chunk['target'] = y_chunk
+
+        df_columns = dataset_chunk.columns.tolist()
 
         for x_miss in columns:
             most_significant_diff = {}
             for x_obs in df_columns:
-                if self.dataset[x_obs].dtype != 'object':
+                if dataset_chunk[x_obs].dtype != 'object':
 
-                    instances = self.dataset.copy()
+                    instances = dataset_chunk.copy()
 
                     if x_obs != x_miss:
                         # Find the instance with lower MR% values of x_obs
@@ -565,11 +536,245 @@ class mMNAR:
             most_feature = min(
                 most_significant_diff, key=most_significant_diff.get
             )
-            pos_xmis = self.dataset[most_feature].sort_values()[:N].index
-            self.dataset.loc[pos_xmis, x_miss] = np.nan
+            pos_xmis = dataset_chunk[most_feature].sort_values()[:N].index
+            dataset_chunk.loc[pos_xmis, x_miss] = np.nan
             df_columns.remove(most_feature)
-            self.dataset = self.dataset.drop(columns=most_feature)
+            dataset_chunk = dataset_chunk.drop(columns=most_feature)
 
-        if not self.missTarget:
-            self.dataset['target'] = self.y
-        return self.dataset
+        
+        return dataset_chunk
+    
+    def random(self, missing_rate: int = 10):
+        """Generate missing data using parallel processing."""
+        if missing_rate >= 100:
+            raise ValueError(
+                'Missing Rate is too high, the whole feature will be deleted!'
+            )
+        elif missing_rate < 0:
+            raise ValueError('Missing rate must be between [0,100]')
+
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=None,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=None,
+                                      columns=None,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._random_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+    def correlated(self, missing_rate: int = 10, deterministic:bool = False):
+        """Generate missing data using parallel processing."""
+
+        if missing_rate >= 50:
+            raise ValueError(
+                'Features will be all NaN, you should decrease the missing rate'
+            )
+        
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=deterministic,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=None,
+                                      columns=None,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._correlated_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+    def median(self, missing_rate: int = 10, deterministic:bool = False):
+        """Generate missing data using parallel processing."""
+        
+        if missing_rate >= 50:
+            raise ValueError(
+                'Features will be all NaN, you should decrease the missing rate'
+            )
+
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=deterministic,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=None,
+                                      columns=None,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._median_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+    def MBOUV(
+        self, missing_rate: int = 10, depend_on_external=None, ascending=True
+    ):
+        """Generate missing data using parallel processing."""
+        
+        if missing_rate > 90:
+            raise ValueError(
+                'Maximum missing rate per feature must be clipped at 90%'
+            )
+        elif missing_rate < 0:
+            raise ValueError('Missing rate must be between [0,100]')
+        
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=None,
+                                      depend_on_external=depend_on_external,
+                                      ascending=ascending,
+                                      randomness=None,
+                                      columns=None,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._MBOUV_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+    def MBOV_randomness(
+        self,
+        missing_rate: int = 10,
+        randomness: float = 0,
+        columns: list = None
+    ):
+        """Generate missing data using parallel processing."""
+        
+        if not (0 <= randomness <= 0.5):
+            raise ValueError('randomness must be in range [0,0.5]')
+
+        if columns is None:
+            raise TypeError(
+                'You must inform columns from dataset to generate missing data'
+            )
+
+        if missing_rate >= 100:
+            raise ValueError(
+                'Missing Rate is too high, the whole feature will be deleted!'
+            )
+        elif missing_rate < 0:
+            raise ValueError('Missing rate must be between [0,100]')
+        
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=None,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=randomness,
+                                      columns=columns,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._MBOV_randomness_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+
+    def MBOV_median(self, missing_rate: int = 10, columns: list = None):
+        """Generate missing data using parallel processing."""
+        
+
+        if missing_rate >= 100:
+            raise ValueError(
+                'Missing Rate is too high, the whole feature will be deleted!'
+            )
+        elif missing_rate < 0:
+            raise ValueError('Missing rate must be between [0,100]')
+
+        if columns is None:
+            raise TypeError(
+                'You must inform columns from dataset to generate missing data'
+            )
+        
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=None,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=None,
+                                      columns=columns,
+                                      statistical_method=None)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._MBOV_median_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+
+    def MBIR(
+        self,
+        missing_rate: int = 10,
+        columns: list = None,
+        statistical_method: str = 'Mann-Whitney',
+    ):
+        """Generate missing data using parallel processing."""
+        
+        if missing_rate >= 100:
+            raise ValueError(
+                'Missing Rate is too high, the whole feature will be deleted!'
+            )
+        elif missing_rate < 0:
+            raise ValueError('Missing rate must be between [0,100]')
+
+        if columns is None:
+            raise TypeError(
+                'You must inform columns from dataset to generate missing data'
+            )
+
+        elif set(columns) == set(self.dataset):
+            warnings.warn('All dataset will be drop', UserWarning)
+
+        chunks = self._set_chuck_size(missing_rate=missing_rate, 
+                                      deterministic=None,
+                                      depend_on_external=None,
+                                      ascending=None,
+                                      randomness=None,
+                                      columns=columns,
+                                      statistical_method=statistical_method)
+
+        # Use multiprocessing Pool to parallelize
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMNAR._MBIR_strategy_to_generate_md, chunks)
+
+        # Combine the results into a single DataFrame
+        final_dataset = pd.concat(results, axis=0)
+        return final_dataset
+
+
+if __name__ == "__main__":
+    import numpy as np 
+    import pmlb
+
+    # Function to help split data
+    def split_data(data):
+        df = data.copy()
+        X = df.drop(columns=["target"])
+        y = data["target"]
+
+        return X,np.array(y)
+
+    # The data from PMLB
+    kddcup = pmlb.fetch_data('kddcup')
+    X_, y_ = split_data(kddcup)
+
+
+    generator = mMNAR(X=X_, y=y_, n_Threads=2)
+    gen_md = generator.MBOV_median(missing_rate=10)
+    print(sum(gen_md.isna().sum()) / (np.shape(gen_md)[0] * np.shape(gen_md)[1]))

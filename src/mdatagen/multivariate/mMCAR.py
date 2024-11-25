@@ -34,7 +34,7 @@ class mMCAR:
     ```
     """
 
-    def __init__(self, X: pd.DataFrame, y: np.array, missing_rate: int = 10, missTarget:bool=False, seed:int=None):
+    def __init__(self, X: pd.DataFrame, y: np.ndarray, missing_rate: int = 10, missTarget:bool=False, seed:int=None):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
         if not isinstance(y, np.ndarray):

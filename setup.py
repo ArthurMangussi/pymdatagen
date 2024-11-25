@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.1.68',
+    version='0.1.70',
     keywords=['machine learning', 'preprocessing data'],
     packages=find_packages(where="src"),
     package_dir={"": "src"},

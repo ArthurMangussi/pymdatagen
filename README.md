@@ -134,7 +134,7 @@ import pandas as pd
 from sklearn.datasets import load_iris
 
 from mdatagen.univariate.uMCAR import uMCAR
-from mdatagen.metrics.metrics import EvaluateImputation
+from mdatagen.metrics import EvaluateImputation
 
 # Load the data
 iris = load_iris()
@@ -168,7 +168,23 @@ print(eval_metric.show())
 Contributions are welcome! Feel free to open issues, submit pull requests, or provide feedback.
 
 ## Citation
-If you use **mdatagen** in your research, please cite the [original paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8605316)
+If you use **mdatagen** in your research, please cite the package as an independent software tool. Additionally, if your research benefits from the concepts or methodologies discussed in the survey by Santos et al. (2019), we encourage citing their work as well.
+
+### Citation for the mdatagen package:
+The **mdatagen** package is an independent Python library designed to generate artificial missing data. It does not reproduce or extend the implementation of any previous work, but it is related to ideas explored in Santos et al. (2019). Please cite the package as follows:
+
+Bibtex entry:
+```bash
+@misc{mdatagen2024,
+  author = {Mangussi, Arthur Dantas and Santos, Miriam Seoane and Lopes, Filipe Loyola and Pereira, Ricardo Cardoso and Lorena, Ana Carolina and Abreu, Pedro Henriques},
+  title = {mdatagen: A Python library for generating missing data},
+  year = {2024},
+  howpublished = {\url{https://arthurmangussi.github.io/pymdatagen/}},
+}
+```
+### Citation for the survey by Santos et al. (2019):
+If your work references concepts or methodologies discussed in the survey by [Santos et al. (2019)](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8605316), please also cite their paper:
+
 
 Bibtex entry:
 ```bash
@@ -183,4 +199,4 @@ Bibtex entry:
   doi={10.1109/ACCESS.2019.2891360}}
 ```
 ## Acknowledgements
-The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) under grants 2022/10553-6, 2023/13688-2, and 2021/06870-3. Moreover, this research was supported in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, and Portuguese Recovery and Resilience Plan (PRR) through project C645008882-00000055 Center for Responsable AI.
+The authors gratefully acknowledge the Brazilian funding agencies FAPESP (Fundação Amparo à Pesquisa do Estado de São Paulo) under grants 2021/06870-3, 2022/10553-6, and 2023/13688-2. Moreover, this research was supported in part by the Coordenação de Aperfeiçoamento de Pessoalde Nível Superior - Brasil (CAPES) - Finance Code 001, and Portuguese Recovery and Resilience Plan (PRR) through project C645008882-00000055 Center for Responsable AI.
