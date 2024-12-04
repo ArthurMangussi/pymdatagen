@@ -10,6 +10,7 @@ __pycache__/
 .vscode
 
 site/
+/docs/pmivae
 
 # Distribution / packaging
 .Python
