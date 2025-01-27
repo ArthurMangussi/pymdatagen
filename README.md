@@ -175,11 +175,15 @@ The **mdatagen** package is an independent Python library designed to generate a
 
 Bibtex entry:
 ```bash
-@misc{mdatagen2024,
-  author = {Mangussi, Arthur Dantas and Santos, Miriam Seoane and Lopes, Filipe Loyola and Pereira, Ricardo Cardoso and Lorena, Ana Carolina and Abreu, Pedro Henriques},
-  title = {mdatagen: A Python library for generating missing data},
-  year = {2024},
-  howpublished = {\url{https://arthurmangussi.github.io/pymdatagen/}},
+@article{MANGUSSI2025,
+title = {mdatagen: A python library for the artificial generation of missing data},
+journal = {Neurocomputing},
+pages = {129478},
+year = {2025},
+issn = {0925-2312},
+doi = {https://doi.org/10.1016/j.neucom.2025.129478},
+url = {https://www.sciencedirect.com/science/article/pii/S092523122500150X},
+author = {Arthur Dantas Mangussi and Miriam Seoane Santos and Filipe Loyola Lopes and Ricardo Cardoso Pereira and Ana Carolina Lorena and Pedro Henriques Abreu}
 }
 ```
 ### Citation for the survey by Santos et al. (2019):
