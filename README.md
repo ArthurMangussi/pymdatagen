@@ -178,6 +178,7 @@ Bibtex entry:
 @article{MANGUSSI2025,
 title = {mdatagen: A python library for the artificial generation of missing data},
 journal = {Neurocomputing},
+volume = {625},
 pages = {129478},
 year = {2025},
 issn = {0925-2312},
