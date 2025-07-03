@@ -6,11 +6,13 @@
 # Arthur Dantas Mangussi - mangussiarthur@gmail.com
 # =============================================================================
 
+from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 from mdatagen.utils.feature_choice import FeatureChoice
 from mdatagen.utils.math_calcs import MathCalcs
 from multiprocessing.pool import Pool
+from pyampute.ampute import MultivariateAmputation
 
 # ==========================================================================
 class mMAR:
@@ -243,6 +245,52 @@ class mMAR:
             dataset_chunk['target'] = y_chunk
         return dataset_chunk
     
+    @staticmethod
+    def _translate_params(data: pd.DataFrame, incomplete_vars):
+        """
+        Function to transform the columns names into index
+        """
+
+        # Se os incomplete_vars forem nomes, converte para índices
+        if isinstance(incomplete_vars[0], str):
+            incomplete_vars_idx = [data.columns.get_loc(c) for c in incomplete_vars]
+            
+        else:
+            incomplete_vars_idx = incomplete_vars
+
+
+        return incomplete_vars_idx
+    
+    @staticmethod
+    def _apply_pyampute_on_chunk(args):
+        (dataset_chunk, 
+         patterns, 
+         missing_rate, 
+         std, 
+         verbose, 
+         seed, 
+         lower_range, 
+         upper_range, 
+         max_diff_with_target, 
+         max_iter) = args
+
+        try:
+            ma = MultivariateAmputation(
+                prop=missing_rate / 100,
+                patterns=patterns,
+                std=std,
+                verbose=verbose,
+                seed=seed,
+                lower_range=lower_range,
+                upper_range=upper_range,
+                max_diff_with_target=max_diff_with_target,
+                max_iter=max_iter
+            )
+            data_amputed = ma.fit_transform(dataset_chunk.values)
+            return pd.DataFrame(data_amputed, columns=dataset_chunk.columns)
+        except Exception as error:
+            raise ValueError(error)
+    
     def random(self, missing_rate: int = 10) -> pd.DataFrame:
         """Generate missing data using parallel processing."""
         
@@ -294,24 +342,68 @@ class mMAR:
         # Combine the results into a single DataFrame
         final_dataset = pd.concat(results, axis=0)
         return final_dataset
+    
+    def pattern_missingness(self, 
+                            patterns: List[Dict]=None,
+                            missing_rate: int = 10,
+                            std:bool = True,                  
+                            verbose: bool = False,
+                            seed: Optional[int] = None,
+                            lower_range: float = -3,
+                            upper_range: float = 3,
+                            max_diff_with_target: float = 0.001,
+                            max_iter: int = 100):
+        """
+        Generate missing data using pattern-based multivariate amputation.
 
-if __name__ == "__main__":
-    import numpy as np 
-    import pmlb
+        References:
+        [2] van Buuren, S., J. P. L. Brand, C. G. M. Groothuis-Oudshoorn, and D. B. Rubin.
+        Fully conditional specification in multivariate imputation.
+        Journal of Statistical Computation and Simulation, 76(12):1049–1064, 2006.
 
-    # Function to help split data
-    def split_data(data):
-        df = data.copy()
-        X = df.drop(columns=["target"])
-        y = data["target"]
+        [3] Schouten, R. M., P. Lugtig, and G. Vink.
+        Generating missing values for simulation purposes: a multivariate amputation procedure.
+        Journal of Statistical Computation and Simulation, 88(15):2909–2930, 2018.
 
-        return X,np.array(y)
+        """
+        if missing_rate >= 100:
+            raise ValueError(
+                'Missing Rate is too high, the whole dataset will be deleted!'
+            )
+        
+        if patterns is None:
+            incomplete_f = np.random.choice(self.X.columns, 
+                                            size=int(self.X.shape[1]*0.5), 
+                                            replace=False)
+            incomplete_features = self._translate_params(self.X, incomplete_f)
 
-    # The data from PMLB
-    kddcup = pmlb.fetch_data('kddcup')
-    X_, y_ = split_data(kddcup)
+            patterns = [{
+                "score_to_probability_func": "SIGMOID-RIGHT",
+                "mechanism": "MAR",
+                "incomplete_vars": incomplete_features,   
+                "freq": 1
+            }]
 
+        
+        chunks = self._set_chuck_size(missing_rate)
+        chunk_args = [
+            (
+                chunk_data,
+                patterns,
+                missing_rate,
+                std,
+                verbose,
+                seed,
+                lower_range,
+                upper_range,
+                max_diff_with_target,
+                max_iter
+            )
+            for (chunk_data, _, _, _, _) in chunks
+        ]
 
-    generator = mMAR(X=X_, y=y_,n_Threads=5)
-    gen_md = generator.median(missing_rate=10)
-    print(sum(gen_md.isna().sum()) / (np.shape(gen_md)[0] * np.shape(gen_md)[1]))
+        with Pool(processes=self.n_Threads) as pool:
+            results = pool.map(mMAR._apply_pyampute_on_chunk, chunk_args)
+
+        final_dataset = pd.concat(results, axis=0).reset_index(drop=True)
+        return final_dataset

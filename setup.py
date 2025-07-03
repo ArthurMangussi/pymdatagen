@@ -7,7 +7,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name='mdatagen',
-    version='0.1.71',
+    version='0.1.8',
     keywords=['machine learning', 'preprocessing data'],
     packages=find_packages(where="src"),
     package_dir={"": "src"},
@@ -25,5 +25,6 @@ setup(
         'pandas >= 2.0.3',
         'scikit-learn >= 1.3.0',
         'missingno >= 0.5.2',
-        'scipy >= 1.11.4']
+        'scipy >= 1.11.4',
+        'pyampute >= 0.0.3']
 )

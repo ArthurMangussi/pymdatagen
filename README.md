@@ -1,4 +1,4 @@
-# mdatagen: A Python Library for the Generation of Artificial Missing Data
+# mdatagen: A Python Library For the Artificial Generation of Missing Data
 
 ![Python3](https://img.shields.io/badge/Language-Python3-steelblue)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
