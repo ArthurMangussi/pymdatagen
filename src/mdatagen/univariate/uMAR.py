@@ -40,7 +40,8 @@ class uMAR:
         y: np.ndarray,
         missing_rate: int = 10,
         x_miss: str = None,
-        x_obs:str = None
+        x_obs:str = None,
+        seed:int = None,
     ):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
@@ -60,6 +61,8 @@ class uMAR:
         self.y = y
         self.dataset = self.X.copy()
         self.dataset['target'] = y
+        if seed is not None:
+            np.random.seed(seed)
 
         self.x_miss, self.x_obs = FeatureChoice._define_xmiss(
             self.X, self.y, x_miss, x_obs
