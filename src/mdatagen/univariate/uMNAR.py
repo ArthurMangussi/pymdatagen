@@ -40,6 +40,7 @@ class uMNAR:
         missing_rate: int = 10,
         x_miss: str = None,
         threshold: float = 0,
+        seed: int = None,
     ):
         if not isinstance(X, pd.DataFrame):
             raise TypeError('Dataset must be a Pandas Dataframe')
@@ -61,6 +62,9 @@ class uMNAR:
         self.dataset['target'] = y
         self.p = threshold
         self.N = round(self.missing_rate * self.dataset.shape[0] / 100)
+        self.seed = seed
+        if seed is not None:
+            np.random.seed(seed)
 
         if not (0 <= self.p <= 1):
             raise ValueError('Threshold must be in range [0,1]')
