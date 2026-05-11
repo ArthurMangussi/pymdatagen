@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/Documentation-Link-green.svg)](docs/)
 [![Latest PyPI Version](https://img.shields.io/pypi/v/mdatagen.svg)](https://pypi.org/project/mdatagen/)
-
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/mdatagen?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/mdatagen)
 
 ## Overview
 This package has been developed to address a gap in machine learning research, specifically the artificial generation of missing data. Santos et al. (2019) provided a survey that presents various strategies for both univariate and multivariate scenarios, but the Python community still needs implementations of these strategies. Our Python library **missing-data-generator** (mdatagen) puts forward a comprehensive set of implementations of missing data mechanisms, covering Missing Completely at Random (MCAR), Missing at Random (MAR), and Missing Not at Random (MNAR), allowing users to simulate several real-world scenarios comprising absent observations. The library is designed for easy integration with existing Python-based data analysis workflows, including well-established modules such as scikit-learn, and popular libraries for missing data visualization, such as missingno, enhancing its accessibility and usability for researchers.
