@@ -304,7 +304,7 @@ class EvaluateImputation:
     def _percentage_of_correct_prediction(self):
         """
         Calculates and returns the Percentage of Correct Predictions (PCP).
-        Values closer to 1 indicate more accurate imputations.
+        Values closer to 100 indicate more accurate imputations.
 
         Returns
         -------
@@ -319,7 +319,9 @@ class EvaluateImputation:
         original = np.array(self.original).flatten()
         imputed = np.array(self.data_imputed).flatten() 
         correct = sum(a == b for a, b in zip(original, imputed))
-        pcp = correct / len(self.original.shape[0])
+        if original.size == 0:
+            raise ValueError("Cannot calculate PCP for empty data")
+        pcp = correct / original.size
 
         return round(100 * pcp, 2)
     
